@@ -108,8 +108,12 @@ main {
 
 .yiyan {
     position: absolute;
-    top: 10%;
-    left: 50%;
-    margin: 0 auto;
-    color: #3ea;
+    top: 0%;
+    color: #f4a83a;
+    width: 100%;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    font-size: 25px;
+
 }
