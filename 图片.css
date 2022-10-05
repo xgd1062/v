@@ -14,15 +14,14 @@ main {
 }
 
 .glass {
-    height: 600px;
+    height: 340px;
     background: white;
-    width: 60%;
+    width: 460px;
     background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
     border-radius: 1rem;
     z-index: 2;
     backdrop-filter: blur(1rem);
     position: relative;
-
 }
 
 .glass img {
