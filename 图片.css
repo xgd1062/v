@@ -1,91 +1,115 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
-#d1 {
-    margin: 0 auto;
-    width: 1400px;
-    height: 400px;
-    /* background-color: #098900; */
+main {
+    background: linear-gradient(to right top, #65dfc9, #6cdbeb);
+    height: 800px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
 }
 
-.d11 {
+.glass {
+    height: 600px;
+    background: white;
+    width: 60%;
+    background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
+    border-radius: 1rem;
+    z-index: 2;
+    backdrop-filter: blur(1rem);
     position: relative;
-    height: 400px;
-    width: 400px;
-    float: left;
-    background-color: #b0d5df;
-    text-align: center;
-    overflow: auto;
+
 }
 
-.d11 img {
-    width: 380px;
-    margin-top: 10px;
-}
-
-.d12 {
-    height: 400px;
-    width: 1000px;
-    float: right;
-    background-color: #e3b4b8;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-body {
-    background-color: #ccccd6;
-    height: 100%;
+.glass img {
     width: 100%;
-    text-align: center;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
-img {
-    width: 15%;
-    background-color: #66ff00;
-    vertical-align: bottom;
+.tt div {
+    position: absolute;
+    overflow: hidden;
+    transition: all 2s;
+}
+
+.t0 {
+    top: 5%;
+    right: 5%;
+    height: 8rem;
+    width: 8rem;
+    border-radius: 50%;
+    background: white;
+    background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
+    z-index: 5;
+}
+
+.tt:hover .t0 {
+    height: calc(8rem / 2);
+    width: calc(8rem / 2);
+    top: calc(5% / 2 + 8rem / 2);
+    right: calc(5% / 2 + 8rem / 2);
+}
+
+.t1 {
+    top: 5%;
+    right: 8%;
+    width: 1rem;
+    height: 8rem;
+    border-radius: 20px;
+    z-index: -1;
+}
+
+.tt:hover .t1 {
+    z-index: 4;
+    right: calc(5% + 150px);
+    width: 12.8rem;
 }
 
 
-form {
-    margin-top: 50px;
+.t2 {
+    z-index: -1;
+    top: 10%;
+    right: 8%;
+    width: 1rem;
+    height: 1rem;
+}
+
+.tt:hover .t2 {
+    z-index: 4;
+    top: calc(10% + 100px);
+    right: calc(8% + 100px);
+    width: 960px;
+    height: 540px;
+}
+
+.t3 {
+    top: 10%;
+    right: 5%;
+    width: 8rem;
+    height: 1rem;
+    z-index: -1;
+    border-radius: 20px;
+}
+
+.tt:hover .t3 {
+    z-index: 4;
+    top: calc(5% + 150px);
+    height: 4.5rem;
+}
+
+.yiyan {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    margin: 0 auto;
+    color: #3ea;
 }
