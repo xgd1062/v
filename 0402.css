@@ -1,0 +1,210 @@
+* {
+    padding: 0px;
+    margin: 0px;
+    border: 0;
+}
+
+img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+h1 {
+    text-align: center;
+}
+
+a {
+    text-decoration: none;
+    color: #000;
+}
+
+.top {
+    width: 100%;
+    text-align: center;
+    height: 100px;
+    background-color: #18b7f6;
+}
+
+.top .tt {
+    position: relative;
+    top: -75px;
+    color: #fff;
+}
+
+
+.b0402 {
+    width: 90%;
+    margin: 0 5% 0 5%;
+}
+
+
+.c1 {
+    margin: 30px 0 20px 0;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 30px;
+}
+
+
+.c1 .c11 {
+    grid-row: 1/4;
+    grid-column: 1/4;
+    background-color: #b8e742;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+
+}
+
+/* 轮播图外壳 */
+.c11 .banner-img-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    /* 开启G盒，让图片横向排列 */
+    display: grid;
+    grid-template-columns: repeat(5, 100%);
+
+}
+
+/* 动画关键帧 */
+@keyframes run {
+
+    0%,
+    10% {
+        transform: translateX(0);
+    }
+
+    20%,
+    30% {
+        transform: translateX(-100%);
+    }
+
+    40%,
+    50% {
+        transform: translateX(-200%);
+    }
+
+    60%,
+    70% {
+        transform: translateX(-300%);
+    }
+
+    80%,
+    90% {
+        transform: translateX(-400%);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* 鼠标移入，轮播图启动 */
+.c1 .c11:hover .banner-img-container {
+    animation: run 10s ease infinite;
+}
+
+.c1 .c12 {
+    aspect-ratio: 16 / 9;
+    background-color: #b8e742;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.c1 .c12 h1 {
+    position: relative;
+    top: -70px;
+    transition: all 0.3s;
+    color: #b8e742;
+}
+
+.c1 .c12 img {
+    filter: blur(0.5px);
+    /* 调整模糊程度 */
+    transition: all 0.3s;
+
+}
+
+/* 鼠标移入效果 */
+
+.c1 .c12:hover img {
+    filter: blur(2px);
+}
+
+.c1 .c12:hover h1,
+.c1 .c12:hover p {
+    position: relative;
+    color: #fff;
+    top: -90px;
+    transition: all 0.3s;
+}
+
+.c1 .c12:hover p {
+    padding: 5px 0 5px 0;
+    background-color: #1781b5;
+}
+
+.c1 .c12:hover {
+    transition: all 0.3s;
+    background-color: #fff;
+    box-shadow:
+        0 0 10px #fff,
+        /* 内发光 */
+        0 0 5px #fff,
+        /* 内发光 */
+        0 0 20px rgb(34, 251, 255),
+        /* 外发光 */
+        0 0 25px rgb(36, 120, 255);
+    /* 外发光 */
+}
+
+/* 鼠标移入效果 */
+.c122 h1 {
+    font-size: 1.6rem;
+}
+
+.c122 p {
+    font-size: 0.7rem;
+}
+
+.last {
+    background-color: #b0d5df;
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    border-radius: 8px;
+    padding: 5px 0 5px 0;
+}
+
+.last .lt {
+    text-align: center;
+    color: #fff;
+}
+
+.yiyan {
+    font-size: 18px;
+    color: #d4acad;
+    width: 100%;
+    text-align: center;
+}
+
+@media screen and (max-width: 780px) {
+    .c1 {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .c1 .c11 {
+        grid-row: 1/3;
+        grid-column: 1/3;
+        aspect-ratio: 16 / 9;
+    }
+
+    h1 {
+        font-size: 1.7rem;
+    }
+
+}
