@@ -14,14 +14,13 @@ h1 {
     text-align: center;
 }
 
-p {
-    font-size: 0.9rem;
-}
-
 a {
     text-decoration: none;
     color: #000;
 }
+
+/* //////////////////////////////////////////////////// */
+/* //////////////////////////////////////////////////// */
 
 .top {
     width: 100%;
@@ -32,7 +31,7 @@ a {
 
 .top .tt {
     position: relative;
-    top: -75px;
+    top: -75%;
     color: #fff;
 }
 
@@ -73,6 +72,7 @@ a {
 
 }
 
+/* //////////////////////////////////////////////////// */
 /* 动画关键帧 */
 @keyframes run {
 
@@ -106,23 +106,35 @@ a {
     }
 }
 
+/* //////////////////////////////////////////////////// */
+
+/* //////////////////////////////////////////////////// */
 /* 鼠标移入，轮播图启动 */
 .c1 .c11:hover .banner-img-container {
     animation: run 10s ease infinite;
 }
+
+/* //////////////////////////////////////////////////// */
 
 .c1 .c12 {
     aspect-ratio: 16 / 9;
     background-color: #b8e742;
     border-radius: 10px;
     overflow: hidden;
+    transition: all 0.3s;
 }
 
 .c1 .c12 h1 {
     position: relative;
-    top: -70px;
+    top: -75%;
     transition: all 0.3s;
     color: #b8e742;
+}
+
+.c1 .c12 p {
+    color: #b8e742;
+    font-size: 0.9rem;
+    transition: all 0.3s;
 }
 
 .c1 .c12 img {
@@ -132,6 +144,7 @@ a {
 
 }
 
+/* //////////////////////////////////////////////////// */
 /* 鼠标移入效果 */
 
 .c1 .c12:hover img {
@@ -142,7 +155,7 @@ a {
 .c1 .c12:hover p {
     position: relative;
     color: #fff;
-    top: -90px;
+    top: -5.6rem;
     transition: all 0.3s;
 }
 
@@ -166,13 +179,17 @@ a {
 }
 
 /* 鼠标移入效果 */
+/* //////////////////////////////////////////////////// */
+
 .c122 h1 {
     font-size: 1.6rem;
 }
 
-.c122 p {
+.c12 .c122 p {
     font-size: 0.7rem;
 }
+
+/* //////////////////////////////////////////////////// */
 
 .last {
     background-color: #b0d5df;
@@ -195,6 +212,8 @@ a {
     text-align: center;
 }
 
+/* //////////////////////////////////////////////////// */
+
 @media screen and (max-width: 780px) {
     .c1 {
         grid-template-columns: 1fr 1fr;
@@ -207,8 +226,26 @@ a {
         aspect-ratio: 16 / 9;
     }
 
-    h1 {
-        font-size: 1.7rem;
+    /* 字体大小适配 */
+    .tt {
+        font-size: 1.6rem;
+    }
+
+    .c1 .c12 h1 {
+        font-size: 7vw;
+    }
+
+    .c1 .c12 p {
+        font-size: 4vw;
+    }
+
+    .c12 .c122 p {
+        font-size: 3vw;
+    }
+
+    .c1 .c12:hover h1,
+    .c1 .c12:hover p {
+        top: -90%;
     }
 
 }
