@@ -11,3 +11,6 @@ git status (查看当前状态的命令)
 git clone https://  (克隆GitHub项目到本地)
 
 git remote add origin https://  (本地关联GitHub)
+
+git push -u origin master (首次提交到GitHub)
+git push -u origin master (后续每次提交到GitHub)
