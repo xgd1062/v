@@ -17,7 +17,6 @@ git push -u origin master (后续每次提交到GitHub)
 
 ssh-keygen -t rsa -b 4096 -C "xgdlove@qq.com"
 
-github令牌
 1
 4
 3
