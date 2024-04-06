@@ -14,6 +14,10 @@ h1 {
     text-align: center;
 }
 
+p {
+    font-size: 0.9rem;
+}
+
 a {
     text-decoration: none;
     color: #000;
@@ -179,7 +183,7 @@ a {
     padding: 5px 0 5px 0;
 }
 
-.last .lt {
+.last .lt a {
     text-align: center;
     color: #fff;
 }
