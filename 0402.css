@@ -118,7 +118,7 @@ a {
 
 .c1 .c12 {
     aspect-ratio: 16 / 9;
-    background-color: #b8e742;
+    background-color: #93b5cf;
     border-radius: 10px;
     overflow: hidden;
     transition: all 0.3s;
@@ -128,7 +128,7 @@ a {
     position: relative;
     top: -75%;
     transition: all 0.3s;
-    color: #b8e742;
+    color: #d8e3e7;
 }
 
 .c1 .c12 p {
@@ -138,10 +138,11 @@ a {
 }
 
 .c1 .c12 img {
+    position: relative;
     filter: blur(0.5px);
     /* 调整模糊程度 */
     transition: all 0.3s;
-
+    z-index: -1;
 }
 
 /* //////////////////////////////////////////////////// */
@@ -149,6 +150,7 @@ a {
 
 .c1 .c12:hover img {
     filter: blur(2px);
+    z-index: 0;
 }
 
 .c1 .c12:hover h1,
