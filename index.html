@@ -1,26 +1,20 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer" />
-    <title>0402</title>
+    <title>0402 - 动态版</title>
     <link rel="stylesheet" href="0402.css">
-    <link rel="shortcut icon" href="./img/login.png">
     <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
-
 </head>
-
-
 <body>
     <div class="top">
         <img src="./img/1.png" alt="">
         <h1 class="tt">欢迎您的光临！请开始享受吧</h1>
     </div>
-    <!-- top是独立的 -->
+
     <div class="b0402">
-        <div class="c1">
+        <div class="c1" id="card-container">
             <div class="c11">
                 <div class="banner-img-container">
                     <img src="http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png" alt="">
@@ -30,280 +24,40 @@
                     <img src="http://p.ananas.chaoxing.com/star3/origin/d595de8ec4fff4264a9cd7537f862d93.png" alt="">
                 </div>
             </div>
-            <!-- 大图 -->
-            <div class="c12">
-                <a href="http://im.qq.com/index/">
-                    <img src="http://static-res.qq.com/web/im.qq.com/qq9_introduction_poster.jpg" alt="">
-                    <h1>QQ</h1>
-                    <p>一个聊天软件</p>
-                </a>
+
             </div>
 
-            <!-- 上面是标号1 -->
-            <div class="c12">
-                <a href="https://weixin.qq.com/">
-                    <img src="http://static-res.qq.com/web/im.qq.com/qq9_introduction_poster.jpg" alt="">
-                    <h1>微信</h1>
-                    <p>另一个聊天软件</p>
-                </a>
-            </div>
-            <!-- 上面是标号2 -->
-            <div class="c12">
-                <a href="http://pc.woozooo.com/mydisk.php">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png" alt="">
-                    <h1>蓝奏云</h1>
-                    <p>目前好用的100mb网盘</p>
-                </a>
-            </div>
-            <!-- 上面是标号3 -->
-            <div class="c12">
-                <a href="http://tool.liumingye.cn/music/?page=searchPage">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png" alt="">
-                    <h1>音乐网站</h1>
-                    <p>用来下载歌曲用的，这一波可省不少钱</p>
-                </a>
-            </div>
-            <!-- 上面是标号4 -->
-            <div class="c12">
-                <a href="https://test.ustc.edu.cn/">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png" alt="">
-                    <h1>测速</h1>
-                    <p>一个测速网站-中科大测速站</p>
-                </a>
-            </div>
-            <!-- 上面是标号5 -->
-            <div class="c12">
-                <a href="http://filehelper.weixin.qq.com/">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png" alt="">
-                    <h1>微信助手</h1>
-                    <p>微信文件传输助手</p>
-                </a>
-            </div>
-            <!-- 上面是标号6 -->
-            <div class="c12">
-                <a href="https://www.beijing-time.org/">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png" alt="">
-                    <h1>北京时间</h1>
-                    <p>抢东西秒杀</p>
-                </a>
-            </div>
-            <!-- 上面是标号7 -->
-            <div class="c12">
-                <a href="http://e.ahau.edu.cn/ipcheck6.jsp">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png" alt="">
-                    <h1>智慧安农</h1>
-                    <p>该有的，我都有，使用频率太高了</p>
-                </a>
-            </div>
-            <!-- 上面是标号8 -->
-            <div class="c12">
-                <a href="http://www.bilibili.com/">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png" alt="">
-                    <h1>哔哩哔哩</h1>
-                    <p>寓教于乐，学习圣地</p>
-                </a>
-            </div>
-            <!-- 上面是标号9 -->
-            <div class="c12">
-                <a href="http://www.age.tv">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png" alt="">
-                    <h1>AGE动漫</h1>
-                    <p>看番专业户，没有你我可不同意</p>
-                </a>
-            </div>
-            <!-- 上面是标号10 -->
-            <div class="c12">
-                <a href="https://h5.ele.me/msite/?spm=a2ogi.12425113.0.0.6ebe561ffFkHju">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png" alt="">
-                    <h1>饿了么</h1>
-                    <p>h5小程序，嘎嘎快</p>
-                </a>
-            </div>
-            <!-- 上面是标号11 -->
-            <div class="c12">
-                <a href="http://www.ahau.edu.cn/">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png" alt="">
-                    <h1>安农大</h1>
-                    <p>安徽农业大学--学校官网</p>
-                </a>
-            </div>
-            <!-- 上面是标号12 -->
-            <!-- 主12 -->
-            <!-- 副14 -->
-            <div class="c12">
-                <a class="c122" href="http://www.soujianzhu.cn/">
-                    <img src="http://i2.hdslb.com/bfs/archive/036a64b4293c952817ef72b71138b253e948b25f.jpg" alt="">
-                    <h1>建筑规范</h1>
-                    <p>具有影响力的建筑网站</p>
-                </a>
-            </div>
-            <div class="c12">
-                <a class="c122" href="bookmarks.html">
-                    <img src="http://i2.hdslb.com/bfs/archive/036a64b4293c952817ef72b71138b253e948b25f.jpg" alt="">
-                    <h1>书签--PC</h1>
-                    <p>目标是让国风舞蹈更加发光发亮！</p>
-                </a>
-            </div>
-            <div class="c12">
-                <a class="c122" href="https://squoosh.app/?from=thosefree.com">
-                    <img src="http://i2.hdslb.com/bfs/archive/036a64b4293c952817ef72b71138b253e948b25f.jpg" alt="">
-                    <h1>图片压缩</h1>
-                    <p>目标是让国风舞蹈更加发光发亮！</p>
-                </a>
-            </div>
-            <div class="c12">
-                <a class="c122" href="https://cloud.huawei.com/home#/home">
-                    <img src="http://i2.hdslb.com/bfs/archive/036a64b4293c952817ef72b71138b253e948b25f.jpg" alt="">
-                    <h1>华为云服务</h1>
-                    <p>目标是让国风舞蹈更加发光发亮！</p>
-                </a>
-            </div>
-            <div class="c12">
-                <a class="c122" href="https://cloud.oppo.com/index.html">
-                    <img src="http://i2.hdslb.com/bfs/archive/036a64b4293c952817ef72b71138b253e948b25f.jpg" alt="">
-                    <h1>OPPO云服务</h1>
-                    <p>目标是让国风舞蹈更加发光发亮！</p>
-                </a>
-            </div>
-
-            <div class="c12">
-                <a class="c122" href="https://www.xiazaitool.com/">
-                    <img src="http://i2.hdslb.com/bfs/archive/5a58daa4a78c119df337f1299f42a959ab7adcda.jpg" alt="">
-                    <h1>下载狗</h1>
-                    <p>解析视频图片，无水印下载</p>
-                </a>
-            </div>
-            <!-- 前七个 -->
-
-            <div class="c12">
-                <a class="c122" href="https://ys.lbbb.cc/">
-                    <img src="http://i2.hdslb.com/bfs/archive/036a64b4293c952817ef72b71138b253e948b25f.jpg" alt="">
-                    <h1>视频解析网站</h1>
-                    <p>都能看，都挺好</p>
-                </a>
-            </div>
-            <div class="c12">
-                <a class="c122" href="https://space.bilibili.com/35579222/?spm_id_from=333.999.0.0">
-                    <img src="http://i2.hdslb.com/bfs/archive/036a64b4293c952817ef72b71138b253e948b25f.jpg" alt="">
-                    <h1>紫颜-小仙紫</h1>
-                    <p>目标是让国风舞蹈更加发光发亮！</p>
-                </a>
-            </div>
-            <div class="c12">
-                <a class="c122" href="https://space.bilibili.com/35579222/?spm_id_from=333.999.0.0">
-                    <img src="http://i2.hdslb.com/bfs/archive/036a64b4293c952817ef72b71138b253e948b25f.jpg" alt="">
-                    <h1>紫颜-小仙紫</h1>
-                    <p>目标是让国风舞蹈更加发光发亮！</p>
-                </a>
-            </div>
-            <div class="c12">
-                <a class="c122" href="https://space.bilibili.com/35579222/?spm_id_from=333.999.0.0">
-                    <img src="http://i2.hdslb.com/bfs/archive/036a64b4293c952817ef72b71138b253e948b25f.jpg" alt="">
-                    <h1>紫颜-小仙紫</h1>
-                    <p>目标是让国风舞蹈更加发光发亮！</p>
-                </a>
-            </div>
-            <div class="c12">
-                <a class="c122" href="https://space.bilibili.com/35579222/?spm_id_from=333.999.0.0">
-                    <img src="http://i2.hdslb.com/bfs/archive/036a64b4293c952817ef72b71138b253e948b25f.jpg" alt="">
-                    <h1>紫颜-小仙紫</h1>
-                    <p>目标是让国风舞蹈更加发光发亮！</p>
-                </a>
-            </div>
-            <div class="c12">
-                <a class="c122" href="https://space.bilibili.com/35579222/?spm_id_from=333.999.0.0">
-                    <img src="http://i2.hdslb.com/bfs/archive/036a64b4293c952817ef72b71138b253e948b25f.jpg" alt="">
-                    <h1>紫颜-小仙紫</h1>
-                    <p>目标是让国风舞蹈更加发光发亮！</p>
-                </a>
-            </div>
-            <div class="c12">
-                <a class="c122" href="https://space.bilibili.com/35579222/?spm_id_from=333.999.0.0">
-                    <img src="http://i2.hdslb.com/bfs/archive/036a64b4293c952817ef72b71138b253e948b25f.jpg" alt="">
-                    <h1>紫颜-小仙紫</h1>
-                    <p>目标是让国风舞蹈更加发光发亮！</p>
-                </a>
-            </div>
-
-            <!-- B站美女系列 -->
-            <div class="c12">
-                <a class="c122" href="https://space.bilibili.com/18841842/?spm_id_from=333.999.0.0">
-                    <img src="http://i0.hdslb.com/bfs/archive/0f15991eebc570b0243529d7538f1c096dd70b39.jpg" alt="">
-                    <h1>慕慕有奶糖</h1>
-                    <p>五个好妹妹呦～该选哪一个？FIVEver《一笔》原创单曲✨</p>
-                </a>
-            </div>
-            <div class="c12">
-                <a class="c122" href="https://space.bilibili.com/2689967/?spm_id_from=333.999.0.0">
-                    <img src="http://i2.hdslb.com/bfs/archive/5a58daa4a78c119df337f1299f42a959ab7adcda.jpg" alt="">
-                    <h1>醋醋cucu</h1>
-                    <p>被八个美女包围，选不出来啦！！</p>
-                </a>
-            </div>
-            <div class="c12">
-                <a class="c122" href="https://space.bilibili.com/35579222/?spm_id_from=333.999.0.0">
-                    <img src="http://i2.hdslb.com/bfs/archive/036a64b4293c952817ef72b71138b253e948b25f.jpg" alt="">
-                    <h1>紫颜-小仙紫</h1>
-                    <p>目标是让国风舞蹈更加发光发亮！</p>
-                </a>
-            </div>
-            <div class="c12">
-                <a class="c122" href="https://space.bilibili.com/35579222/?spm_id_from=333.999.0.0">
-                    <img src="http://i2.hdslb.com/bfs/archive/036a64b4293c952817ef72b71138b253e948b25f.jpg" alt="">
-                    <h1>紫颜-小仙紫</h1>
-                    <p>目标是让国风舞蹈更加发光发亮！</p>
-                </a>
-            </div>
-            <div class="c12">
-                <a class="c122" href="https://space.bilibili.com/35579222/?spm_id_from=333.999.0.0">
-                    <img src="http://i2.hdslb.com/bfs/archive/036a64b4293c952817ef72b71138b253e948b25f.jpg" alt="">
-                    <h1>紫颜-小仙紫</h1>
-                    <p>目标是让国风舞蹈更加发光发亮！</p>
-                </a>
-            </div>
-            <div class="c12">
-                <a class="c122" href="https://space.bilibili.com/35579222/?spm_id_from=333.999.0.0">
-                    <img src="http://i2.hdslb.com/bfs/archive/036a64b4293c952817ef72b71138b253e948b25f.jpg" alt="">
-                    <h1>紫颜-小仙紫</h1>
-                    <p>目标是让国风舞蹈更加发光发亮！</p>
-                </a>
-            </div>
-            <div class="c12">
-                <a class="c122" href="https://space.bilibili.com/35579222/?spm_id_from=333.999.0.0">
-                    <img src="http://i2.hdslb.com/bfs/archive/036a64b4293c952817ef72b71138b253e948b25f.jpg" alt="">
-                    <h1>紫颜-小仙紫</h1>
-                    <p>目标是让国风舞蹈更加发光发亮！</p>
-                </a>
-            </div>
-            <div class="c12">
-                <a class="c122" href="https://xiaoyi.huawei.com/chat/">
-                    <img src="http://i2.hdslb.com/bfs/archive/036a64b4293c952817ef72b71138b253e948b25f.jpg" alt="">
-                    <h1>小艺-AI</h1>
-                    <p>目标是让国风舞蹈更加发光发亮！</p>
-                </a>
-            </div>
-            <!-- B站美女系列 -->
-
-
-        </div>
-
-
-        <!-- 下面也是较为独立的 -->
         <div class="yiyan">
-            <span id="jinrishici-sentence"
-                style="background: #b2d7e9;padding: 0 5px;border-radius: 5px 5px 0 0;">正在加载今日诗词....</span>
+            <span id="jinrishici-sentence" style="background: #b2d7e9;padding: 0 5px;border-radius: 5px 5px 0 0;">正在加载今日诗词....</span>
         </div>
-        <!-- 随机一言 -->
+
         <div class="last">
             <div class="lt"><a href="README.md">我是谁？</a></div>
-
             <div class="lt"><a href="https://xgd1062.github.io/x/out.html">旧主页之重生的我</a></div>
-
             <div class="lt"><a href="http://github.com/">GitHub</a></div>
         </div>
-
     </div>
 
+    <script>
+        // 读取外部 JSON 并生成 HTML
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('card-container');
+                data.forEach(item => {
+                    const card = `
+                        <div class="c12">
+                            <a href="${item.url}">
+                                <img src="${item.img}" alt="${item.title}">
+                                <h1>${item.title}</h1>
+                                <p>${item.desc}</p>
+                            </a>
+                        </div>
+                    `;
+                    container.innerHTML += card;
+                });
+            })
+            .catch(error => console.error('Error loading data:', error));
+    </script>
 </body>
-
 </html>

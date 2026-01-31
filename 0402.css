@@ -117,11 +117,12 @@ a {
 /* //////////////////////////////////////////////////// */
 
 .c1 .c12 {
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 16 / 9; /* 保持你的原始比例 */
     background-color: #93b5cf;
     border-radius: 10px;
     overflow: hidden;
     transition: all 0.3s;
+    min-height: 100px; /* 新增：防止容器塌陷 */
 }
 
 .c1 .c12 h1 {
