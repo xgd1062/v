@@ -1,0 +1,8 @@
+[
+    { "title": "QQ", "url": "http://im.qq.com/index/", "img": "http://static-res.qq.com/web/im.qq.com/qq9_introduction_poster.jpg", "desc": "一个聊天软件" },
+    { "title": "微信", "url": "https://weixin.qq.com/", "img": "http://static-res.qq.com/web/im.qq.com/qq9_introduction_poster.jpg", "desc": "另一个聊天软件" },
+    { "title": "蓝奏云", "url": "http://pc.woozooo.com/mydisk.php", "img": "http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png", "desc": "目前好用的100mb网盘" },
+    { "title": "哔哩哔哩", "url": "http://www.bilibili.com/", "img": "http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png", "desc": "寓教于乐，学习圣地" },
+    { "title": "智慧安农", "url": "http://e.ahau.edu.cn/ipcheck6.jsp", "img": "http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png", "desc": "该有的，我都有" },
+    { "title": "紫颜-小仙紫", "url": "https://space.bilibili.com/35579222/", "img": "http://i2.hdslb.com/bfs/archive/036a64b4293c952817ef72b71138b253e948b25f.jpg", "desc": "国风舞蹈发光发亮" }
+]

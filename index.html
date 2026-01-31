@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <meta name="referrer" content="no-referrer" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>0402 - 动态版</title>
+    <title>0402 导航 - 兼容优化版</title>
     <link rel="stylesheet" href="0402.css">
     <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
 </head>
@@ -14,18 +15,17 @@
     </div>
 
     <div class="b0402">
-        <div class="c1" id="card-container">
+        <div class="c1" id="main-grid">
             <div class="c11">
                 <div class="banner-img-container">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png" alt="">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/ab00a63761f3c24c82f64aa303f97a43.png" alt="">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/3ba2603b1a5005aeccfb43a370ec120b.png" alt="">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/4b20f3296785d9b55a84f113a16e2e17.png" alt="">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/d595de8ec4fff4264a9cd7537f862d93.png" alt="">
+                    <img src="http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png">
+                    <img src="http://p.ananas.chaoxing.com/star3/origin/ab00a63761f3c24c82f64aa303f97a43.png">
+                    <img src="http://p.ananas.chaoxing.com/star3/origin/3ba2603b1a5005aeccfb43a370ec120b.png">
+                    <img src="http://p.ananas.chaoxing.com/star3/origin/4b20f3296785d9b55a84f113a16e2e17.png">
+                    <img src="http://p.ananas.chaoxing.com/star3/origin/d595de8ec4fff4264a9cd7537f862d93.png">
                 </div>
             </div>
-
-            </div>
+        </div>
 
         <div class="yiyan">
             <span id="jinrishici-sentence" style="background: #b2d7e9;padding: 0 5px;border-radius: 5px 5px 0 0;">正在加载今日诗词....</span>
@@ -33,31 +33,30 @@
 
         <div class="last">
             <div class="lt"><a href="README.md">我是谁？</a></div>
-            <div class="lt"><a href="https://xgd1062.github.io/x/out.html">旧主页之重生的我</a></div>
+            <div class="lt"><a href="https://xgd1062.github.io/x/out.html">旧主页</a></div>
             <div class="lt"><a href="http://github.com/">GitHub</a></div>
         </div>
     </div>
 
     <script>
-        // 读取外部 JSON 并生成 HTML
-        fetch('data.json')
-            .then(response => response.json())
+        fetch('信息.json')
+            .then(res => res.json())
             .then(data => {
-                const container = document.getElementById('card-container');
+                const grid = document.getElementById('main-grid');
                 data.forEach(item => {
-                    const card = `
-                        <div class="c12">
-                            <a href="${item.url}">
-                                <img src="${item.img}" alt="${item.title}">
-                                <h1>${item.title}</h1>
-                                <p>${item.desc}</p>
-                            </a>
-                        </div>
+                    const card = document.createElement('div');
+                    card.className = 'c12';
+                    card.innerHTML = `
+                        <a class="c122" href="${item.url}">
+                            <img src="${item.img}" alt="${item.title}">
+                            <h1>${item.title}</h1>
+                            <p>${item.desc}</p>
+                        </a>
                     `;
-                    container.innerHTML += card;
+                    grid.appendChild(card);
                 });
             })
-            .catch(error => console.error('Error loading data:', error));
+            .catch(err => console.error("数据解析失败:", err));
     </script>
 </body>
 </html>

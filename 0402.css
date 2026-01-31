@@ -1,254 +1,134 @@
-* {
-    padding: 0px;
-    margin: 0px;
-    border: 0;
-}
+* { padding: 0; margin: 0; border: 0; box-sizing: border-box; }
 
 img {
     object-fit: cover;
     width: 100%;
     height: 100%;
+    display: block; /* 防止图片底部空隙 */
 }
 
-h1 {
-    text-align: center;
-}
-
-a {
-    text-decoration: none;
-    color: #000;
-}
-
-/* //////////////////////////////////////////////////// */
-/* //////////////////////////////////////////////////// */
+h1 { text-align: center; }
+a { text-decoration: none; color: #000; }
 
 .top {
     width: 100%;
     text-align: center;
     height: 100px;
     background-color: #18b7f6;
+    overflow: hidden;
 }
 
 .top .tt {
     position: relative;
     top: -75%;
     color: #fff;
+    font-size: 1.5rem;
 }
-
 
 .b0402 {
     width: 90%;
-    margin: 0 5% 0 5%;
+    margin: 30px 5% 0 5%;
 }
 
-
+/* --- Grid 布局修复核心 --- */
 .c1 {
-    margin: 30px 0 20px 0;
-    width: 100%;
     display: grid;
+    /* 150px 最小宽度，自动填充，高度由比例锁定 */
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    /* dense 让浏览器寻找空位填充，防止布局混乱 */
+    grid-auto-flow: row dense; 
     gap: 30px;
+    width: 100%;
 }
-
 
 .c1 .c11 {
-    grid-row: 1/4;
-    grid-column: 1/4;
+    grid-row: span 3;    /* 跨3行 */
+    grid-column: span 3; /* 跨3列 */
     background-color: #b8e742;
     border-radius: 10px;
     overflow: hidden;
     position: relative;
-
+    min-height: 250px;
 }
 
-/* 轮播图外壳 */
-.c11 .banner-img-container {
-    width: 100%;
+.banner-img-container {
+    width: 500%;
     height: 100%;
-    position: absolute;
-    /* 开启G盒，让图片横向排列 */
-    display: grid;
-    grid-template-columns: repeat(5, 100%);
-
+    display: flex; /* 改用 flex 制作轮播更稳定 */
+    animation: run 15s ease infinite;
 }
 
-/* //////////////////////////////////////////////////// */
-/* 动画关键帧 */
+.banner-img-container img { width: 20%; height: 100%; }
+
 @keyframes run {
-
-    0%,
-    10% {
-        transform: translateX(0);
-    }
-
-    20%,
-    30% {
-        transform: translateX(-100%);
-    }
-
-    40%,
-    50% {
-        transform: translateX(-200%);
-    }
-
-    60%,
-    70% {
-        transform: translateX(-300%);
-    }
-
-    80%,
-    90% {
-        transform: translateX(-400%);
-    }
-
-    100% {
-        transform: translateX(0);
-    }
+    0%, 15% { transform: translateX(0); }
+    20%, 35% { transform: translateX(-20%); }
+    40%, 55% { transform: translateX(-40%); }
+    60%, 75% { transform: translateX(-60%); }
+    80%, 95% { transform: translateX(-80%); }
+    100% { transform: translateX(0); }
 }
 
-/* //////////////////////////////////////////////////// */
-
-/* //////////////////////////////////////////////////// */
-/* 鼠标移入，轮播图启动 */
-.c1 .c11:hover .banner-img-container {
-    animation: run 10s ease infinite;
-}
-
-/* //////////////////////////////////////////////////// */
-
+/* --- 小卡片稳定性修复 --- */
 .c1 .c12 {
-    aspect-ratio: 16 / 9; /* 保持你的原始比例 */
     background-color: #93b5cf;
     border-radius: 10px;
     overflow: hidden;
-    transition: all 0.3s;
-    min-height: 100px; /* 新增：防止容器塌陷 */
-}
-
-.c1 .c12 h1 {
     position: relative;
-    top: -75%;
-    transition: all 0.3s;
-    color: #d8e3e7;
-}
-
-.c1 .c12 p {
-    color: #b8e742;
-    font-size: 0.9rem;
-    transition: all 0.3s;
+    aspect-ratio: 16 / 9; /* 锁定比例，无论图片加没加载，位置都不动 */
+    transition: all 0.3s ease;
 }
 
 .c1 .c12 img {
-    position: relative;
     filter: blur(0.5px);
-    /* 调整模糊程度 */
-    transition: all 0.3s;
-    z-index: -1;
+    transition: 0.3s;
 }
 
-/* //////////////////////////////////////////////////// */
-/* 鼠标移入效果 */
-
-.c1 .c12:hover img {
-    filter: blur(2px);
-    z-index: 0;
+.c1 .c122 h1 {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #d8e3e7;
+    font-size: 1.2rem;
+    z-index: 2;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
 }
 
-.c1 .c12:hover h1,
-.c1 .c12:hover p {
-    position: relative;
+.c1 .c122 p {
+    position: absolute;
+    bottom: -100%;
+    width: 100%;
+    text-align: center;
+    background: rgba(23, 129, 181, 0.9);
     color: #fff;
-    top: -5.6rem;
-    transition: all 0.3s;
-}
-
-.c1 .c12:hover p {
-    padding: 5px 0 5px 0;
-    background-color: #1781b5;
-}
-
-.c1 .c12:hover {
-    transition: all 0.3s;
-    background-color: #fff;
-    box-shadow:
-        0 0 10px #fff,
-        /* 内发光 */
-        0 0 5px #fff,
-        /* 内发光 */
-        0 0 20px rgb(34, 251, 255),
-        /* 外发光 */
-        0 0 25px rgb(36, 120, 255);
-    /* 外发光 */
-}
-
-/* 鼠标移入效果 */
-/* //////////////////////////////////////////////////// */
-
-.c122 h1 {
-    font-size: 1.6rem;
-}
-
-.c12 .c122 p {
     font-size: 0.7rem;
+    padding: 5px 0;
+    transition: 0.3s;
 }
 
-/* //////////////////////////////////////////////////// */
+/* Hover 效果兼容性处理 */
+.c1 .c12:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 15px rgba(36, 120, 255, 0.8);
+}
+
+.c1 .c12:hover h1 { top: 30%; color: #fff; }
+.c1 .c12:hover p { bottom: 0; }
+.c1 .c12:hover img { filter: blur(2px); }
+
+.yiyan { margin: 40px 0; text-align: center; }
 
 .last {
     background-color: #b0d5df;
     display: flex;
     justify-content: space-evenly;
-    width: 100%;
+    padding: 10px 0;
     border-radius: 8px;
-    padding: 5px 0 5px 0;
 }
 
-.last .lt a {
-    text-align: center;
-    color: #fff;
-}
-
-.yiyan {
-    font-size: 18px;
-    color: #d4acad;
-    width: 100%;
-    text-align: center;
-}
-
-/* //////////////////////////////////////////////////// */
-
+/* 媒体查询修复：确保移动端不乱 */
 @media screen and (max-width: 780px) {
-    .c1 {
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-    }
-
-    .c1 .c11 {
-        grid-row: 1/3;
-        grid-column: 1/3;
-        aspect-ratio: 16 / 9;
-    }
-
-    /* 字体大小适配 */
-    .tt {
-        font-size: 1.6rem;
-    }
-
-    .c1 .c12 h1 {
-        font-size: 7vw;
-    }
-
-    .c1 .c12 p {
-        font-size: 4vw;
-    }
-
-    .c12 .c122 p {
-        font-size: 3vw;
-    }
-
-    .c1 .c12:hover h1,
-    .c1 .c12:hover p {
-        top: -90%;
-    }
-
+    .c1 { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+    .c1 .c11 { grid-row: span 2; grid-column: span 2; }
 }
