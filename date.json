@@ -100,5 +100,11 @@
         "url": "https://xiaoyi.huawei.com/chat/",
         "img": "http://i2.hdslb.com/bfs/archive/036a64b4293c952817ef72b71138b253e948b25f.jpg",
         "desc": "华为人工智能助手"
+    },
+    {
+        "title": "诗意工具箱",
+        "url": "https://xgd1062.github.io/1062/",
+        "desc": "一个全AI自研的网页合集",
+        "img": ""
     }
 ]
