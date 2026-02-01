@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta name="referrer" content="no-referrer" />
     <meta charset="UTF-8">
@@ -9,6 +10,7 @@
     <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 </head>
+
 <body>
     <div class="top">
         <img src="./img/1.png" alt="">
@@ -51,11 +53,14 @@
 
     <div id="item-modal" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><h2 id="form-title">编辑卡片</h2><span onclick="closeModal('item-modal')" class="close">&times;</span></div>
+            <div class="modal-header">
+                <h2 id="form-title">编辑卡片</h2><span onclick="closeModal('item-modal')" class="close">&times;</span>
+            </div>
             <div class="form-group"><label>标题</label><input type="text" id="edit-title"></div>
             <div class="form-group"><label>链接</label><input type="text" id="edit-url"></div>
             <div class="form-group"><label>描述</label><input type="text" id="edit-desc"></div>
-            <div class="form-group"><label>图片</label><input type="text" id="edit-img" oninput="previewImage(this.value)"></div>
+            <div class="form-group"><label>图片</label><input type="text" id="edit-img"
+                    oninput="previewImage(this.value)"></div>
             <div class="img-preview-box"><img id="img-preview" src=""></div>
             <div class="modal-footer">
                 <button onclick="deleteCurrentItem()" class="btn-danger">删除</button>
@@ -66,10 +71,13 @@
 
     <div id="sync-modal" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><h2>同步到 GitHub</h2><span onclick="closeModal('sync-modal')" class="close">&times;</span></div>
+            <div class="modal-header">
+                <h2>同步到 GitHub</h2><span onclick="closeModal('sync-modal')" class="close">&times;</span>
+            </div>
             <div class="form-group"><input type="password" id="gh-token" placeholder="GitHub Token"></div>
             <div class="form-group"><input type="text" id="gh-repo" placeholder="用户名/仓库名 (如: xgd1062/v)"></div>
-            <button onclick="syncToGithub()" id="sync-btn" class="btn-primary" style="width:100%">覆盖云端 data.json</button>
+            <button onclick="syncToGithub()" id="sync-btn" class="btn-primary" style="width:100%">覆盖云端
+                data.json</button>
         </div>
     </div>
 
@@ -165,10 +173,28 @@
             renderGrid(); closeModal('item-modal');
         }
 
-        function deleteCurrentItem() { if(confirm("删除该卡片？")) { globalData.splice(currentEditIndex, 1); renderGrid(); closeModal('item-modal'); } }
+        function deleteCurrentItem() { if (confirm("删除该卡片？")) { globalData.splice(currentEditIndex, 1); renderGrid(); closeModal('item-modal'); } }
         function previewImage(u) { document.getElementById('img-preview').src = u; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function openSyncModal() { document.getElementById('sync-modal').style.display = 'flex'; }
+        // --- 修改后的打开同步弹窗函数 ---
+        function openSyncModal() {
+            // 1. 获取输入框元素
+            const tokenInput = document.getElementById('gh-token');
+            const repoInput = document.getElementById('gh-repo');
+
+            // 2. 设置默认填充值 (请根据实际情况修改下面的字符串)
+            // 注意：Token 属于敏感信息，如果您是在公共设备使用，请谨慎填写默认值
+            if (!tokenInput.value) {
+                tokenInput.value = "";
+            }
+
+            if (!repoInput.value) {
+                repoInput.value = "xgd1062/v"; // 默认填充您的用户名/仓库名
+            }
+
+            // 3. 显示弹窗
+            document.getElementById('sync-modal').style.display = 'flex';
+        }
 
         // --- GitHub 同步代码 (保持 Bearer 认证) ---
         async function syncToGithub() {
@@ -192,4 +218,5 @@
         }
     </script>
 </body>
+
 </html>
