@@ -4,7 +4,7 @@
     <meta name="referrer" content="no-referrer" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>0402 导航 - 兼容优化版</title>
+    <title>0402 可视化管理版</title>
     <link rel="stylesheet" href="0402.css">
     <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
 </head>
@@ -25,38 +25,222 @@
                     <img src="http://p.ananas.chaoxing.com/star3/origin/d595de8ec4fff4264a9cd7537f862d93.png">
                 </div>
             </div>
-        </div>
+            </div>
 
-        <div class="yiyan">
-            <span id="jinrishici-sentence" style="background: #b2d7e9;padding: 0 5px;border-radius: 5px 5px 0 0;">正在加载今日诗词....</span>
+        <div class="footer-fixed-area">
+            <div class="yiyan-box">
+                <span id="jinrishici-sentence">正在加载今日诗词....</span>
+            </div>
+            <div class="last">
+                <div class="lt"><a href="README.md">我是谁？</a></div>
+                <div class="lt"><a href="https://xgd1062.github.io/x/out.html">旧主页</a></div>
+                <div class="lt"><a href="http://github.com/">GitHub</a></div>
+            </div>
         </div>
+    </div>
 
-        <div class="last">
-            <div class="lt"><a href="README.md">我是谁？</a></div>
-            <div class="lt"><a href="https://xgd1062.github.io/x/out.html">旧主页</a></div>
-            <div class="lt"><a href="http://github.com/">GitHub</a></div>
+    <div class="admin-wrapper">
+        <div class="admin-menu">
+            <div class="menu-item" onclick="addNewCard()">➕ 新增卡片</div>
+            <div class="menu-item" onclick="openSyncModal()">☁️ GitHub同步</div>
+            <div class="menu-item" onclick="exportJson()">📋 复制JSON</div>
+        </div>
+        <div class="main-fab">⚙️</div>
+    </div>
+
+    <div id="item-modal" class="modal">
+        <div class="modal-content form-content">
+            <div class="modal-header">
+                <h2 id="form-title">编辑卡片</h2>
+                <span onclick="closeModal('item-modal')" class="close">&times;</span>
+            </div>
+            <div class="form-group">
+                <label>标题</label>
+                <input type="text" id="edit-title">
+            </div>
+            <div class="form-group">
+                <label>链接 URL</label>
+                <input type="text" id="edit-url">
+            </div>
+            <div class="form-group">
+                <label>描述</label>
+                <input type="text" id="edit-desc">
+            </div>
+            <div class="form-group">
+                <label>图片 URL</label>
+                <input type="text" id="edit-img" oninput="previewImage(this.value)">
+            </div>
+            <div class="img-preview-box">
+                <img id="img-preview" src="" alt="预览">
+            </div>
+            <div class="modal-footer">
+                <button onclick="deleteCurrentItem()" class="btn-danger">删除</button>
+                <button onclick="saveItemChange()" class="btn-primary">保存修改</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="sync-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>同步到 GitHub</h2>
+                <span onclick="closeModal('sync-modal')" class="close">&times;</span>
+            </div>
+            <div class="form-group">
+                <input type="password" id="gh-token" placeholder="GitHub Token">
+                <input type="text" id="gh-repo" placeholder="用户名/仓库名 (如: xgd1062/x)">
+                <input type="text" id="gh-path" value="date.json" placeholder="文件路径">
+            </div>
+            <button onclick="syncToGithub()" id="sync-btn" class="btn-primary" style="width:100%">立即覆盖云端</button>
         </div>
     </div>
 
     <script>
-        fetch('信息.json')
-            .then(res => res.json())
-            .then(data => {
-                const grid = document.getElementById('main-grid');
-                data.forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = 'c12';
-                    card.innerHTML = `
-                        <a class="c122" href="${item.url}">
-                            <img src="${item.img}" alt="${item.title}">
-                            <h1>${item.title}</h1>
-                            <p>${item.desc}</p>
-                        </a>
-                    `;
-                    grid.appendChild(card);
+        // 全局数据存储
+        let globalData = [];
+        let currentEditIndex = -1; // 当前正在编辑的索引
+
+        const grid = document.getElementById('main-grid');
+
+        // 初始化加载
+        fetch('date.json?v=' + Date.now()).then(r => r.json()).then(data => {
+            globalData = data;
+            renderGrid();
+        }).catch(e => console.error("请在服务器环境下运行"));
+
+        // 渲染网格 (核心逻辑)
+        function renderGrid() {
+            // 保留轮播图，清空其他
+            const banner = grid.querySelector('.c11');
+            grid.innerHTML = '';
+            grid.appendChild(banner);
+
+            globalData.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'c12';
+                // 关键：添加编辑按钮 (event.preventDefault 防止跳转)
+                card.innerHTML = `
+                    <div class="edit-btn-overlay" onclick="openEditModal(${index}, event)">✎</div>
+                    <a class="c122" href="${item.url}" target="_blank">
+                        <img src="${item.img}" onerror="this.src='./img/1.png'">
+                        <h1>${item.title}</h1>
+                        <p>${item.desc}</p>
+                    </a>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // 打开编辑弹窗
+        function openEditModal(index, event) {
+            if(event) {
+                event.preventDefault(); // 阻止链接跳转
+                event.stopPropagation();
+            }
+            currentEditIndex = index;
+            const item = globalData[index];
+            
+            document.getElementById('form-title').innerText = "编辑卡片";
+            document.getElementById('edit-title').value = item.title;
+            document.getElementById('edit-url').value = item.url;
+            document.getElementById('edit-desc').value = item.desc;
+            document.getElementById('edit-img').value = item.img;
+            document.getElementById('img-preview').src = item.img;
+            
+            document.getElementById('item-modal').style.display = 'flex';
+        }
+
+        // 新增卡片
+        function addNewCard() {
+            currentEditIndex = -1; // -1 代表新增模式
+            document.getElementById('form-title').innerText = "新增卡片";
+            // 清空表单
+            ['edit-title','edit-url','edit-desc','edit-img'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('img-preview').src = '';
+            document.getElementById('item-modal').style.display = 'flex';
+        }
+
+        // 图片实时预览
+        function previewImage(url) {
+            document.getElementById('img-preview').src = url;
+        }
+
+        // 保存修改 (仅本地内存)
+        function saveItemChange() {
+            const newItem = {
+                title: document.getElementById('edit-title').value,
+                url: document.getElementById('edit-url').value,
+                desc: document.getElementById('edit-desc').value,
+                img: document.getElementById('edit-img').value
+            };
+
+            if (currentEditIndex === -1) {
+                globalData.push(newItem); // 新增
+            } else {
+                globalData[currentEditIndex] = newItem; // 修改
+            }
+            
+            renderGrid();
+            closeModal('item-modal');
+        }
+
+        // 删除卡片
+        function deleteCurrentItem() {
+            if(currentEditIndex === -1) return;
+            if(confirm("确定要删除这个卡片吗？")) {
+                globalData.splice(currentEditIndex, 1);
+                renderGrid();
+                closeModal('item-modal');
+            }
+        }
+
+        // 导出/复制 JSON
+        function exportJson() {
+            navigator.clipboard.writeText(JSON.stringify(globalData, null, 4));
+            alert("完整 JSON 已复制到剪贴板！");
+        }
+
+        // --- 以下是云端同步逻辑 ---
+        function openSyncModal() { document.getElementById('sync-modal').style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        async function syncToGithub() {
+            const btn = document.getElementById('sync-btn');
+            const token = document.getElementById('gh-token').value;
+            const repo = document.getElementById('gh-repo').value;
+            const path = document.getElementById('gh-path').value;
+
+            if(!token || !repo) return alert("请填写完整 GitHub 信息");
+
+            btn.innerText = "⏳ 同步中...";
+            btn.disabled = true;
+
+            try {
+                // 1. 获取 SHA
+                const getRes = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
+                    headers: { 'Authorization': `token ${token}`, 'Cache-Control': 'no-cache' }
                 });
-            })
-            .catch(err => console.error("数据解析失败:", err));
+                const fileData = await getRes.json();
+                
+                // 2. 覆盖上传 (使用 globalData)
+                const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `token ${token}` },
+                    body: JSON.stringify({
+                        message: "CMS Update: " + new Date().toLocaleString(),
+                        content: btoa(unescape(encodeURIComponent(JSON.stringify(globalData, null, 4)))),
+                        sha: fileData.sha
+                    })
+                });
+
+                if(putRes.ok) alert("✅ 云端同步成功！");
+                else alert("❌ 失败，请检查Token权限");
+            } catch (e) { alert("错误: " + e.message); }
+            finally { 
+                btn.innerText = "立即覆盖云端"; 
+                btn.disabled = false; 
+            }
+        }
     </script>
 </body>
 </html>
