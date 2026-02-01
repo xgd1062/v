@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta name="referrer" content="no-referrer" />
     <meta charset="UTF-8">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="0402.css">
     <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
 </head>
+
 <body>
     <div class="top">
         <img src="./img/1.png" alt="">
@@ -25,7 +27,7 @@
                     <img src="http://p.ananas.chaoxing.com/star3/origin/d595de8ec4fff4264a9cd7537f862d93.png">
                 </div>
             </div>
-            </div>
+        </div>
 
         <div class="footer-fixed-area">
             <div class="yiyan-box">
@@ -133,20 +135,20 @@
 
         // 打开编辑弹窗
         function openEditModal(index, event) {
-            if(event) {
+            if (event) {
                 event.preventDefault(); // 阻止链接跳转
                 event.stopPropagation();
             }
             currentEditIndex = index;
             const item = globalData[index];
-            
+
             document.getElementById('form-title').innerText = "编辑卡片";
             document.getElementById('edit-title').value = item.title;
             document.getElementById('edit-url').value = item.url;
             document.getElementById('edit-desc').value = item.desc;
             document.getElementById('edit-img').value = item.img;
             document.getElementById('img-preview').src = item.img;
-            
+
             document.getElementById('item-modal').style.display = 'flex';
         }
 
@@ -155,7 +157,7 @@
             currentEditIndex = -1; // -1 代表新增模式
             document.getElementById('form-title').innerText = "新增卡片";
             // 清空表单
-            ['edit-title','edit-url','edit-desc','edit-img'].forEach(id => document.getElementById(id).value = '');
+            ['edit-title', 'edit-url', 'edit-desc', 'edit-img'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('img-preview').src = '';
             document.getElementById('item-modal').style.display = 'flex';
         }
@@ -179,15 +181,15 @@
             } else {
                 globalData[currentEditIndex] = newItem; // 修改
             }
-            
+
             renderGrid();
             closeModal('item-modal');
         }
 
         // 删除卡片
         function deleteCurrentItem() {
-            if(currentEditIndex === -1) return;
-            if(confirm("确定要删除这个卡片吗？")) {
+            if (currentEditIndex === -1) return;
+            if (confirm("确定要删除这个卡片吗？")) {
                 globalData.splice(currentEditIndex, 1);
                 renderGrid();
                 closeModal('item-modal');
@@ -206,41 +208,69 @@
 
         async function syncToGithub() {
             const btn = document.getElementById('sync-btn');
-            const token = document.getElementById('gh-token').value;
-            const repo = document.getElementById('gh-repo').value;
-            const path = document.getElementById('gh-path').value;
+            const token = document.getElementById('gh-token').value.trim();
+            const repo = document.getElementById('gh-repo').value.trim();
+            const path = document.getElementById('gh-path').value.trim();
+            const branch = "main"; // 确保你的仓库默认分支是 main
 
-            if(!token || !repo) return alert("请填写完整 GitHub 信息");
+            if (!token || !repo) return alert("请填写完整 GitHub 信息");
 
-            btn.innerText = "⏳ 同步中...";
+            btn.innerText = "⏳ 正在同步...";
             btn.disabled = true;
 
             try {
-                // 1. 获取 SHA
-                const getRes = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
-                    headers: { 'Authorization': `token ${token}`, 'Cache-Control': 'no-cache' }
+                // 1. 获取文件的 SHA 校验码
+                // 这里的 Header 必须精简，防止触发 CORS 拦截
+                const getRes = await fetch(`https://api.github.com/repos/${repo}/contents/${path}?ref=${branch}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
                 });
+
+                if (!getRes.ok) {
+                    const errorInfo = await getRes.json();
+                    throw new Error(`获取文件失败: ${errorInfo.message}`);
+                }
+
                 const fileData = await getRes.json();
-                
-                // 2. 覆盖上传 (使用 globalData)
+                const fileSha = fileData.sha;
+
+                // 2. 提交更新
+                // 注意：PUT 请求的 headers 也要严格控制
                 const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
                     method: 'PUT',
-                    headers: { 'Authorization': `token ${token}` },
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
                     body: JSON.stringify({
                         message: "CMS Update: " + new Date().toLocaleString(),
                         content: btoa(unescape(encodeURIComponent(JSON.stringify(globalData, null, 4)))),
-                        sha: fileData.sha
+                        sha: fileSha,
+                        branch: branch
                     })
                 });
 
-                if(putRes.ok) alert("✅ 云端同步成功！");
-                else alert("❌ 失败，请检查Token权限");
-            } catch (e) { alert("错误: " + e.message); }
-            finally { 
-                btn.innerText = "立即覆盖云端"; 
-                btn.disabled = false; 
+                if (putRes.ok) {
+                    alert("✅ 同步成功！云端数据已更新。");
+                    closeModal('sync-modal');
+                } else {
+                    const errorInfo = await putRes.json();
+                    throw new Error(`更新失败: ${errorInfo.message}`);
+                }
+
+            } catch (e) {
+                console.error("同步详情报错:", e);
+                alert("❌ 同步过程出错: " + e.message);
+            } finally {
+                btn.innerText = "立即覆盖云端";
+                btn.disabled = false;
             }
         }
     </script>
 </body>
+
 </html>
