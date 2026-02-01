@@ -4,33 +4,38 @@
     <meta name="referrer" content="no-referrer" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>极速导航管理系统 V5.0</title>
+    <title>导航管理系统 V4.5 (SortableJS 版)</title>
     <link rel="stylesheet" href="0402.css">
-    <link rel="preconnect" href="https://lf26-cdn-tos.bytecdntp.com">
-    <script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/sortablejs/1.14.0/Sortable.min.js" defer></script>
+    <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 </head>
 <body>
     <div class="top">
-        <h1 class="tt">欢迎光临！开始管理您的导航</h1>
+        <img src="./img/1.png" alt="">
+        <h1 class="tt">欢迎您的光临！请开始享受吧</h1>
     </div>
 
     <div class="b0402">
         <div class="c1" id="main-grid">
             <div class="c11">
                 <div class="banner-img-container">
-                    <img src="https://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png">
-                    <img src="https://p.ananas.chaoxing.com/star3/origin/ab00a63761f3c24c82f64aa303f97a43.png">
+                    <img src="http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png">
+                    <img src="http://p.ananas.chaoxing.com/star3/origin/ab00a63761f3c24c82f64aa303f97a43.png">
+                    <img src="http://p.ananas.chaoxing.com/star3/origin/3ba2603b1a5005aeccfb43a370ec120b.png">
+                    <img src="http://p.ananas.chaoxing.com/star3/origin/4b20f3296785d9b55a84f113a16e2e17.png">
+                    <img src="http://p.ananas.chaoxing.com/star3/origin/d595de8ec4fff4264a9cd7537f862d93.png">
                 </div>
             </div>
         </div>
 
         <div class="footer-fixed-area">
             <div class="yiyan-box">
-                <span id="jinrishici-sentence">生活原本沉闷，但跑起来就有风。</span>
+                <span id="jinrishici-sentence">正在加载今日诗词....</span>
             </div>
             <div class="last">
-                <a href="#">我的主页</a>
-                <a href="https://github.com/xgd1062/v">GitHub 仓库</a>
+                <div class="lt"><a href="README.md">我是谁？</a></div>
+                <div class="lt"><a href="https://xgd1062.github.io/x/out.html">旧主页</a></div>
+                <div class="lt"><a href="http://github.com/">GitHub</a></div>
             </div>
         </div>
     </div>
@@ -46,26 +51,25 @@
 
     <div id="item-modal" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><h2>卡片管理</h2><span onclick="closeModal('item-modal')" class="close">&times;</span></div>
+            <div class="modal-header"><h2 id="form-title">编辑卡片</h2><span onclick="closeModal('item-modal')" class="close">&times;</span></div>
             <div class="form-group"><label>标题</label><input type="text" id="edit-title"></div>
             <div class="form-group"><label>链接</label><input type="text" id="edit-url"></div>
             <div class="form-group"><label>描述</label><input type="text" id="edit-desc"></div>
-            <div class="form-group"><label>图片</label><input type="text" id="edit-img" oninput="document.getElementById('img-preview').src=this.value"></div>
+            <div class="form-group"><label>图片</label><input type="text" id="edit-img" oninput="previewImage(this.value)"></div>
             <div class="img-preview-box"><img id="img-preview" src=""></div>
             <div class="modal-footer">
                 <button onclick="deleteCurrentItem()" class="btn-danger">删除</button>
-                <button onclick="saveItemChange()" class="btn-primary">保存修改</button>
+                <button onclick="saveItemChange()" class="btn-primary">保存</button>
             </div>
         </div>
     </div>
 
     <div id="sync-modal" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><h2>同步云端数据</h2><span onclick="closeModal('sync-modal')" class="close">&times;</span></div>
-            <div class="form-group"><label>GitHub Token</label><input type="password" id="gh-token"></div>
-            <div class="form-group"><label>仓库名</label><input type="text" id="gh-repo" value="xgd1062/v"></div>
-            <div class="form-group"><label>文件名</label><input type="text" id="gh-path" value="data.json"></div>
-            <button onclick="syncToGithub()" id="sync-btn" class="btn-primary" style="width:100%">确认并同步</button>
+            <div class="modal-header"><h2>同步到 GitHub</h2><span onclick="closeModal('sync-modal')" class="close">&times;</span></div>
+            <div class="form-group"><input type="password" id="gh-token" placeholder="GitHub Token"></div>
+            <div class="form-group"><input type="text" id="gh-repo" placeholder="用户名/仓库名 (如: xgd1062/v)"></div>
+            <button onclick="syncToGithub()" id="sync-btn" class="btn-primary" style="width:100%">覆盖云端 data.json</button>
         </div>
     </div>
 
@@ -76,59 +80,55 @@
         let sortableInstance = null;
         const grid = document.getElementById('main-grid');
 
-        // 页面初始化逻辑
-        window.addEventListener('DOMContentLoaded', () => {
-            // 1. 优先渲染本地数据
-            fetch('data.json?v=' + Date.now()).then(r => r.json()).then(data => {
-                globalData = data;
-                renderGrid();
-            }).catch(() => console.log("等待数据配置"));
-
-            // 2. 延迟加载今日诗词，防止阻塞
-            setTimeout(loadPoetryAsync, 500);
-        });
-
-        // 异步加载今日诗词
-        function loadPoetryAsync() {
-            const script = document.createElement('script');
-            script.src = "https://sdk.jinrishici.com/v2/browser/jinrishici.js";
-            script.onload = () => {
-                if(window.jinrishici) {
-                    window.jinrishici.load(res => {
-                        document.getElementById('jinrishici-sentence').innerText = res.data.content;
-                    });
-                }
-            };
-            document.body.appendChild(script);
-        }
+        // 加载数据
+        fetch('data.json?v=' + Date.now()).then(r => r.json()).then(data => {
+            globalData = data;
+            renderGrid();
+        }).catch(() => alert("数据加载失败"));
 
         function renderGrid() {
             const banner = grid.querySelector('.c11');
-            grid.innerHTML = ''; grid.appendChild(banner);
+            grid.innerHTML = '';
+            grid.appendChild(banner);
+
             globalData.forEach((item, index) => {
                 const card = document.createElement('div');
                 card.className = 'c12' + (isDragMode ? ' draggable-active' : '');
-                card.dataset.index = index;
+                card.dataset.index = index; // 绑定索引
                 card.innerHTML = `
                     <div class="edit-btn-overlay" onclick="openEditModal(${index},event)">✎</div>
-                    <a class="c122" href="${isDragMode ? 'javascript:void(0)' : item.url}" target="_blank">
-                        <img src="${item.img}" loading="lazy" onerror="this.src='https://via.placeholder.com/150'">
-                        <h1>${item.title}</h1><p>${item.desc}</p>
-                    </a>`;
+                    <a class="c122" href="${isDragMode ? 'javascript:void(0)' : item.url}" ${isDragMode ? '' : 'target="_blank"'}>
+                        <img src="${item.img}" onerror="this.src='./img/1.png'">
+                        <h1>${item.title}</h1>
+                        <p>${item.desc}</p>
+                    </a>
+                `;
                 grid.appendChild(card);
             });
-            if (isDragMode) initSortable();
+
+            // 如果处于拖拽模式，启用 Sortable
+            if (isDragMode) {
+                initSortable();
+            } else if (sortableInstance) {
+                sortableInstance.destroy();
+                sortableInstance = null;
+            }
         }
 
         function initSortable() {
-            if(sortableInstance) sortableInstance.destroy();
             sortableInstance = Sortable.create(grid, {
-                animation: 150, draggable: ".c12",
-                onEnd: () => {
+                animation: 150,
+                draggable: ".c12", // 只有 c12 卡片可以拖动
+                ghostClass: "sortable-ghost", // 占位符样式
+                onEnd: function (evt) {
+                    // 获取新的顺序
                     const newArr = [];
-                    grid.querySelectorAll('.c12').forEach(el => newArr.push(globalData[el.dataset.index]));
+                    const items = grid.querySelectorAll('.c12');
+                    items.forEach(el => {
+                        newArr.push(globalData[el.dataset.index]);
+                    });
                     globalData = newArr;
-                    renderGrid();
+                    renderGrid(); // 重新渲染刷新 dataset-index
                 }
             });
         }
@@ -139,8 +139,10 @@
             renderGrid();
         }
 
+        // --- 编辑逻辑 ---
         function openEditModal(index, e) {
-            e.stopPropagation(); if (isDragMode) return;
+            e.preventDefault(); e.stopPropagation();
+            if (isDragMode) return;
             currentEditIndex = index;
             const item = globalData[index];
             document.getElementById('edit-title').value = item.title;
@@ -163,32 +165,30 @@
             renderGrid(); closeModal('item-modal');
         }
 
-        function deleteCurrentItem() { if(confirm("删除？")) { globalData.splice(currentEditIndex, 1); renderGrid(); closeModal('item-modal'); } }
+        function deleteCurrentItem() { if(confirm("删除该卡片？")) { globalData.splice(currentEditIndex, 1); renderGrid(); closeModal('item-modal'); } }
+        function previewImage(u) { document.getElementById('img-preview').src = u; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         function openSyncModal() { document.getElementById('sync-modal').style.display = 'flex'; }
 
+        // --- GitHub 同步代码 (保持 Bearer 认证) ---
         async function syncToGithub() {
             const btn = document.getElementById('sync-btn');
             const token = document.getElementById('gh-token').value.trim();
             const repo = document.getElementById('gh-repo').value.trim();
-            const path = document.getElementById('gh-path').value.trim();
-            if (!token) return alert("请输入 Token");
-            btn.innerText = "⏳ 正在连接..."; btn.disabled = true;
+            btn.innerText = "⏳ 同步中..."; btn.disabled = true;
             try {
-                const getRes = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`);
-                const fileData = await getRes.json();
-                const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
-                    method: 'PUT',
-                    headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        message: "Update",
-                        content: btoa(unescape(encodeURIComponent(JSON.stringify(globalData, null, 4)))),
-                        sha: fileData.sha
-                    })
+                const getRes = await fetch(`https://api.github.com/repos/${repo}/contents/data.json?ref=main`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
-                if (putRes.ok) alert("✅ 同步成功！"); else throw new Error("同步失败");
-            } catch (e) { alert("错误: " + e.message); }
-            finally { btn.innerText = "确认并同步"; btn.disabled = false; }
+                const fileData = await getRes.json();
+                const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/data.json`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: "Update", content: btoa(unescape(encodeURIComponent(JSON.stringify(globalData, null, 4)))), sha: fileData.sha, branch: "main" })
+                });
+                if (putRes.ok) alert("✅ 同步成功！"); else throw new Error("上传失败");
+            } catch (e) { alert("❌ 错误：" + e.message); }
+            finally { btn.innerText = "覆盖云端 data.json"; btn.disabled = false; }
         }
     </script>
 </body>
