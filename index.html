@@ -5,15 +5,15 @@
     <meta name="referrer" content="no-referrer" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>导航管理系统 V4.5 (SortableJS 版)</title>
+    <title>导航管理系统 V4.5 - 性能优化版</title>
     <link rel="stylesheet" href="0402.css">
-    <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8" defer></script>
+    <script src="https://lib.baomitu.com/Sortable/1.15.0/Sortable.min.js" defer></script>
 </head>
 
 <body>
     <div class="top">
-        <img src="./img/1.png" alt="">
+        <img src="./img/1.png" alt="" onerror="this.style.opacity='0'">
         <h1 class="tt">欢迎您的光临！请开始享受吧</h1>
     </div>
 
@@ -21,11 +21,11 @@
         <div class="c1" id="main-grid">
             <div class="c11">
                 <div class="banner-img-container">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/ab00a63761f3c24c82f64aa303f97a43.png">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/3ba2603b1a5005aeccfb43a370ec120b.png">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/4b20f3296785d9b55a84f113a16e2e17.png">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/d595de8ec4fff4264a9cd7537f862d93.png">
+                    <img src="http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png" loading="lazy">
+                    <img src="http://p.ananas.chaoxing.com/star3/origin/ab00a63761f3c24c82f64aa303f97a43.png" loading="lazy">
+                    <img src="http://p.ananas.chaoxing.com/star3/origin/3ba2603b1a5005aeccfb43a370ec120b.png" loading="lazy">
+                    <img src="http://p.ananas.chaoxing.com/star3/origin/4b20f3296785d9b55a84f113a16e2e17.png" loading="lazy">
+                    <img src="http://p.ananas.chaoxing.com/star3/origin/d595de8ec4fff4264a9cd7537f862d93.png" loading="lazy">
                 </div>
             </div>
         </div>
@@ -59,8 +59,7 @@
             <div class="form-group"><label>标题</label><input type="text" id="edit-title"></div>
             <div class="form-group"><label>链接</label><input type="text" id="edit-url"></div>
             <div class="form-group"><label>描述</label><input type="text" id="edit-desc"></div>
-            <div class="form-group"><label>图片</label><input type="text" id="edit-img"
-                    oninput="previewImage(this.value)"></div>
+            <div class="form-group"><label>图片</label><input type="text" id="edit-img" oninput="previewImage(this.value)"></div>
             <div class="img-preview-box"><img id="img-preview" src=""></div>
             <div class="modal-footer">
                 <button onclick="deleteCurrentItem()" class="btn-danger">删除</button>
@@ -76,8 +75,7 @@
             </div>
             <div class="form-group"><input type="password" id="gh-token" placeholder="GitHub Token"></div>
             <div class="form-group"><input type="text" id="gh-repo" placeholder="用户名/仓库名 (如: xgd1062/v)"></div>
-            <button onclick="syncToGithub()" id="sync-btn" class="btn-primary" style="width:100%">覆盖云端
-                data.json</button>
+            <button onclick="syncToGithub()" id="sync-btn" class="btn-primary" style="width:100%">覆盖云端 data.json</button>
         </div>
     </div>
 
@@ -88,55 +86,80 @@
         let sortableInstance = null;
         const grid = document.getElementById('main-grid');
 
-        // 加载数据
-        fetch('data.json?v=' + Date.now()).then(r => r.json()).then(data => {
-            globalData = data;
+        // 预设渐变背景
+        const gradients = [
+            'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            'linear-gradient(135deg, #18b7f6 0%, #4facfe 100%)',
+            'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+            'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+            'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)'
+        ];
+
+        // --- 核心优化：先显示缓存，后异步请求 ---
+        const cached = localStorage.getItem('nav_data_cache');
+        if (cached) {
+            globalData = JSON.parse(cached);
             renderGrid();
-        }).catch(() => alert("数据加载失败"));
+        }
+
+        async function initData() {
+            try {
+                const r = await fetch('data.json?v=' + Date.now());
+                const data = await r.json();
+                // 仅在数据有变动时重新渲染
+                if (JSON.stringify(data) !== JSON.stringify(globalData)) {
+                    globalData = data;
+                    localStorage.setItem('nav_data_cache', JSON.stringify(data));
+                    renderGrid();
+                }
+            } catch (e) {
+                console.error("加载最新数据失败，已使用本地缓存");
+            }
+        }
+        initData();
 
         function renderGrid() {
             const banner = grid.querySelector('.c11');
-            grid.innerHTML = '';
-            grid.appendChild(banner);
+            const fragment = document.createDocumentFragment(); // 使用片段优化性能
+            fragment.appendChild(banner);
 
             globalData.forEach((item, index) => {
                 const card = document.createElement('div');
                 card.className = 'c12' + (isDragMode ? ' draggable-active' : '');
-                card.dataset.index = index; // 绑定索引
+                card.dataset.index = index;
+
+                const grad = gradients[index % gradients.length];
+                const hasImg = item.img && item.img.trim() !== "";
+
                 card.innerHTML = `
                     <div class="edit-btn-overlay" onclick="openEditModal(${index},event)">✎</div>
-                    <a class="c122" href="${isDragMode ? 'javascript:void(0)' : item.url}" ${isDragMode ? '' : 'target="_blank"'}>
-                        <img src="${item.img}" onerror="this.src='./img/1.png'">
+                    <a class="c122" href="${isDragMode ? 'javascript:void(0)' : item.url}" 
+                       ${isDragMode ? '' : 'target="_blank"'} 
+                       style="background: ${grad}">
+                        ${hasImg ? `<img src="${item.img}" loading="lazy" onerror="this.style.display='none'">` : ''}
                         <h1>${item.title}</h1>
-                        <p>${item.desc}</p>
+                        <p>${item.desc || ''}</p>
                     </a>
                 `;
-                grid.appendChild(card);
+                fragment.appendChild(card);
             });
 
-            // 如果处于拖拽模式，启用 Sortable
-            if (isDragMode) {
-                initSortable();
-            } else if (sortableInstance) {
-                sortableInstance.destroy();
-                sortableInstance = null;
-            }
+            grid.innerHTML = '';
+            grid.appendChild(fragment);
+
+            if (isDragMode) initSortable();
         }
 
+        // --- 管理逻辑 (新增/保存/删除/排序) ---
         function initSortable() {
+            if (!window.Sortable) return;
             sortableInstance = Sortable.create(grid, {
-                animation: 150,
-                draggable: ".c12", // 只有 c12 卡片可以拖动
-                ghostClass: "sortable-ghost", // 占位符样式
-                onEnd: function (evt) {
-                    // 获取新的顺序
-                    const newArr = [];
-                    const items = grid.querySelectorAll('.c12');
-                    items.forEach(el => {
-                        newArr.push(globalData[el.dataset.index]);
-                    });
+                animation: 150, draggable: ".c12", ghostClass: "sortable-ghost",
+                onEnd: function () {
+                    const newArr = Array.from(grid.querySelectorAll('.c12')).map(el => globalData[el.dataset.index]);
                     globalData = newArr;
-                    renderGrid(); // 重新渲染刷新 dataset-index
+                    localStorage.setItem('nav_data_cache', JSON.stringify(globalData));
+                    renderGrid();
                 }
             });
         }
@@ -147,60 +170,54 @@
             renderGrid();
         }
 
-        // --- 编辑逻辑 ---
         function openEditModal(index, e) {
             e.preventDefault(); e.stopPropagation();
-            if (isDragMode) return;
             currentEditIndex = index;
             const item = globalData[index];
             document.getElementById('edit-title').value = item.title;
             document.getElementById('edit-url').value = item.url;
-            document.getElementById('edit-desc').value = item.desc;
-            document.getElementById('edit-img').value = item.img;
-            document.getElementById('img-preview').src = item.img;
+            document.getElementById('edit-desc').value = item.desc || "";
+            document.getElementById('edit-img').value = item.img || "";
+            document.getElementById('img-preview').src = item.img || "";
             document.getElementById('item-modal').style.display = 'flex';
         }
 
         function addNewCard() {
             currentEditIndex = -1;
             document.querySelectorAll('#item-modal input').forEach(i => i.value = '');
+            document.getElementById('img-preview').src = '';
             document.getElementById('item-modal').style.display = 'flex';
         }
 
         function saveItemChange() {
-            const obj = { title: document.getElementById('edit-title').value, url: document.getElementById('edit-url').value, desc: document.getElementById('edit-desc').value, img: document.getElementById('edit-img').value };
-            if (currentEditIndex === -1) globalData.push(obj); else globalData[currentEditIndex] = obj;
+            const obj = {
+                title: document.getElementById('edit-title').value,
+                url: document.getElementById('edit-url').value,
+                desc: document.getElementById('edit-desc').value,
+                img: document.getElementById('edit-img').value
+            };
+            if (currentEditIndex === -1) globalData.push(obj);
+            else globalData[currentEditIndex] = obj;
+            localStorage.setItem('nav_data_cache', JSON.stringify(globalData));
             renderGrid(); closeModal('item-modal');
         }
 
-        function deleteCurrentItem() { if (confirm("删除该卡片？")) { globalData.splice(currentEditIndex, 1); renderGrid(); closeModal('item-modal'); } }
-        function previewImage(u) { document.getElementById('img-preview').src = u; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        // --- 修改后的打开同步弹窗函数 ---
-        function openSyncModal() {
-            // 1. 获取输入框元素
-            const tokenInput = document.getElementById('gh-token');
-            const repoInput = document.getElementById('gh-repo');
-
-            // 2. 设置默认填充值 (请根据实际情况修改下面的字符串)
-            // 注意：Token 属于敏感信息，如果您是在公共设备使用，请谨慎填写默认值
-            if (!tokenInput.value) {
-                tokenInput.value = "";
-            }
-
-            if (!repoInput.value) {
-                repoInput.value = "xgd1062/v"; // 默认填充您的用户名/仓库名
-            }
-
-            // 3. 显示弹窗
-            document.getElementById('sync-modal').style.display = 'flex';
+        function deleteCurrentItem() { 
+            if (confirm("确定要删除这个卡片吗？")) { 
+                globalData.splice(currentEditIndex, 1); 
+                localStorage.setItem('nav_data_cache', JSON.stringify(globalData));
+                renderGrid(); closeModal('item-modal'); 
+            } 
         }
 
-        // --- GitHub 同步代码 (保持 Bearer 认证) ---
+        function previewImage(u) { document.getElementById('img-preview').src = u; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function openSyncModal() { document.getElementById('sync-modal').style.display = 'flex'; }
+
         async function syncToGithub() {
             const btn = document.getElementById('sync-btn');
             const token = document.getElementById('gh-token').value.trim();
-            const repo = document.getElementById('gh-repo').value.trim();
+            const repo = document.getElementById('gh-repo').value.trim() || "xgd1062/v";
             btn.innerText = "⏳ 同步中..."; btn.disabled = true;
             try {
                 const getRes = await fetch(`https://api.github.com/repos/${repo}/contents/data.json?ref=main`, {
@@ -210,9 +227,15 @@
                 const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/data.json`, {
                     method: 'PUT',
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: "Update", content: btoa(unescape(encodeURIComponent(JSON.stringify(globalData, null, 4)))), sha: fileData.sha, branch: "main" })
+                    body: JSON.stringify({ 
+                        message: "Update data.json via web UI", 
+                        content: btoa(unescape(encodeURIComponent(JSON.stringify(globalData, null, 4)))), 
+                        sha: fileData.sha, 
+                        branch: "main" 
+                    })
                 });
-                if (putRes.ok) alert("✅ 同步成功！"); else throw new Error("上传失败");
+                if (putRes.ok) alert("✅ 同步到 GitHub 成功！"); 
+                else throw new Error("同步失败");
             } catch (e) { alert("❌ 错误：" + e.message); }
             finally { btn.innerText = "覆盖云端 data.json"; btn.disabled = false; }
         }
