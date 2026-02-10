@@ -19,9 +19,9 @@
     },
     {
         "title": "测速",
-        "url": "https://test.ustc.edu.cn/",
-        "img": "http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png",
-        "desc": "中科大测速站"
+        "url": "https://wangsuceshi.bmcx.com/_lt__wangsuceshi/",
+        "desc": "联通网速测试",
+        "img": "http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png"
     },
     {
         "title": "微信助手",
@@ -34,6 +34,12 @@
         "url": "https://www.beijing-time.org/",
         "img": "http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png",
         "desc": "抢东西秒杀必备"
+    },
+    {
+        "title": "安农大",
+        "url": "http://www.ahau.edu.cn/",
+        "desc": "",
+        "img": ""
     },
     {
         "title": "智慧安农",
@@ -90,22 +96,16 @@
         "desc": "让国风舞蹈发光发亮！"
     },
     {
-        "title": "小艺-AI",
-        "url": "https://xiaoyi.huawei.com/chat/",
-        "img": "http://i2.hdslb.com/bfs/archive/036a64b4293c952817ef72b71138b253e948b25f.jpg",
-        "desc": "华为人工智能助手"
-    },
-    {
-        "title": "诗意工具箱",
-        "url": "https://xgd1062.github.io/1062/",
-        "desc": "一个全AI自研的网页合集",
-        "img": ""
-    },
-    {
         "title": "醋醋cucu",
         "url": "https://space.bilibili.com/2689967?spm_id_from=333.999.0.0",
         "desc": "配音演员文晓依 喜欢配音/舞蹈/整活",
         "img": "https://i0.hdslb.com/bfs/new_dyn/4a74783306caed464e1b3686de4a8adc2689967.png@628w_560h_1e_1c.webp"
+    },
+    {
+        "title": "小艺-AI",
+        "url": "https://xiaoyi.huawei.com/chat/",
+        "img": "http://i2.hdslb.com/bfs/archive/036a64b4293c952817ef72b71138b253e948b25f.jpg",
+        "desc": "华为人工智能助手"
     },
     {
         "title": "华为云服务",
@@ -120,9 +120,9 @@
         "img": ""
     },
     {
-        "title": "安农大",
-        "url": "http://www.ahau.edu.cn/",
-        "desc": "",
+        "title": "诗意工具箱",
+        "url": "https://xgd1062.github.io/1062/",
+        "desc": "一个全AI自研的网页合集",
         "img": ""
     }
 ]
