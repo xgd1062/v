@@ -5,10 +5,48 @@
     <meta name="referrer" content="no-referrer" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>导航管理系统 V4.5 - 性能优化版</title>
+    <title>导航管理系统 V4.5 - 渐变轮播版</title>
     <link rel="stylesheet" href="0402.css">
     <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8" defer></script>
     <script src="https://lib.baomitu.com/Sortable/1.15.0/Sortable.min.js" defer></script>
+    <style>
+        /* 新增渐变轮播核心样式 */
+        .banner-img-container {
+            width: 100% !important;
+            /* 取消500%宽度 */
+            height: 100%;
+            position: relative;
+            /* 改为相对定位 */
+            animation: none !important;
+            /* 取消原滑动动画 */
+        }
+
+        .banner-img-container img {
+            position: absolute;
+            /* 所有图片叠加 */
+            top: 0;
+            left: 0;
+            width: 100% !important;
+            /* 铺满容器 */
+            height: 100%;
+            opacity: 0;
+            /* 默认透明 */
+            transition: opacity 1s ease-in-out;
+            /* 渐变过渡 */
+        }
+
+        /* 激活状态的图片显示 */
+        .banner-img-container img.active {
+            opacity: 1;
+            z-index: 10;
+        }
+
+        /* 单张图片时的样式 */
+        .banner-single-img img {
+            opacity: 1 !important;
+            position: relative !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -20,12 +58,8 @@
     <div class="b0402">
         <div class="c1" id="main-grid">
             <div class="c11">
-                <div class="banner-img-container">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png" loading="lazy">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/ab00a63761f3c24c82f64aa303f97a43.png" loading="lazy">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/3ba2603b1a5005aeccfb43a370ec120b.png" loading="lazy">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/4b20f3296785d9b55a84f113a16e2e17.png" loading="lazy">
-                    <img src="http://p.ananas.chaoxing.com/star3/origin/d595de8ec4fff4264a9cd7537f862d93.png" loading="lazy">
+                <div class="banner-img-container" id="banner-container">
+                    <!-- 轮播图图片会通过JS动态生成 -->
                 </div>
             </div>
         </div>
@@ -46,11 +80,13 @@
         <div class="admin-menu">
             <div class="menu-item" onclick="addNewCard()">➕ 新增卡片</div>
             <div class="menu-item" onclick="toggleDragMode()" id="drag-mode-btn">🖐️ 开启拖拽排序</div>
+            <div class="menu-item" onclick="openBannerModal()">🖼️ 编辑轮播图</div>
             <div class="menu-item" onclick="openSyncModal()">☁️ GitHub同步</div>
         </div>
         <div class="main-fab">⚙️</div>
     </div>
 
+    <!-- 卡片编辑弹窗 -->
     <div id="item-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -59,7 +95,8 @@
             <div class="form-group"><label>标题</label><input type="text" id="edit-title"></div>
             <div class="form-group"><label>链接</label><input type="text" id="edit-url"></div>
             <div class="form-group"><label>描述</label><input type="text" id="edit-desc"></div>
-            <div class="form-group"><label>图片</label><input type="text" id="edit-img" oninput="previewImage(this.value)"></div>
+            <div class="form-group"><label>图片</label><input type="text" id="edit-img"
+                    oninput="previewImage(this.value)"></div>
             <div class="img-preview-box"><img id="img-preview" src=""></div>
             <div class="modal-footer">
                 <button onclick="deleteCurrentItem()" class="btn-danger">删除</button>
@@ -68,6 +105,7 @@
         </div>
     </div>
 
+    <!-- GitHub同步弹窗 -->
     <div id="sync-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -75,7 +113,33 @@
             </div>
             <div class="form-group"><input type="password" id="gh-token" placeholder="GitHub Token"></div>
             <div class="form-group"><input type="text" id="gh-repo" placeholder="用户名/仓库名 (如: xgd1062/v)"></div>
-            <button onclick="syncToGithub()" id="sync-btn" class="btn-primary" style="width:100%">覆盖云端 data.json</button>
+            <button onclick="syncToGithub()" id="sync-btn" class="btn-primary" style="width:100%">覆盖云端
+                data.json</button>
+        </div>
+    </div>
+
+    <!-- 轮播图编辑弹窗 -->
+    <div id="banner-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>编辑轮播图</h2><span onclick="closeModal('banner-modal')" class="close">&times;</span>
+            </div>
+            <div class="form-group">
+                <label>轮播图URL（每行一个）</label>
+                <textarea id="banner-urls" rows="6"
+                    style="width:100%;padding:10px;border:1px solid #eee;border-radius:8px;font-size:0.95rem;"></textarea>
+                <small style="color:#666;margin-top:5px;display:block;">提示：至少输入1张图片URL，最多5张</small>
+            </div>
+            <div class="img-preview-box" id="banner-preview-box" style="min-height:150px;">
+                <div id="banner-preview-container"
+                    style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;width:100%;">
+                    <!-- 轮播图预览会动态生成 -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="resetBanner()" class="btn-danger">恢复默认</button>
+                <button onclick="saveBannerChange()" class="btn-primary">保存</button>
+            </div>
         </div>
     </div>
 
@@ -84,7 +148,16 @@
         let currentEditIndex = -1;
         let isDragMode = false;
         let sortableInstance = null;
+        let bannerInterval = null; // 轮播定时器
         const grid = document.getElementById('main-grid');
+        // 轮播图默认图片
+        const defaultBannerUrls = [
+            'http://p.ananas.chaoxing.com/star3/origin/731917c94ae480eeb36847dd78b198c4.png',
+            'http://p.ananas.chaoxing.com/star3/origin/ab00a63761f3c24c82f64aa303f97a43.png',
+            'http://p.ananas.chaoxing.com/star3/origin/3ba2603b1a5005aeccfb43a370ec120b.png',
+            'http://p.ananas.chaoxing.com/star3/origin/4b20f3296785d9b55a84f113a16e2e17.png',
+            'http://p.ananas.chaoxing.com/star3/origin/d595de8ec4fff4264a9cd7537f862d93.png'
+        ];
 
         // 预设渐变背景
         const gradients = [
@@ -95,12 +168,149 @@
             'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)'
         ];
 
+        // --- 渐变轮播核心方法 ---
+        // 获取轮播图URL（优先本地缓存）
+        function getBannerUrls() {
+            const cached = localStorage.getItem('banner_urls');
+            return cached ? JSON.parse(cached) : defaultBannerUrls;
+        }
+
+        // 停止轮播动画
+        function stopBannerAnimation() {
+            if (bannerInterval) {
+                clearInterval(bannerInterval);
+                bannerInterval = null;
+            }
+        }
+
+        // 启动渐变轮播
+        function startBannerAnimation() {
+            stopBannerAnimation(); // 先停止已有定时器
+            const bannerContainer = document.getElementById('banner-container');
+            const images = bannerContainer.querySelectorAll('img');
+            const imgCount = images.length;
+
+            // 只有1张图时不启动动画
+            if (imgCount <= 1) {
+                if (imgCount === 1) images[0].classList.add('active');
+                bannerContainer.classList.add('banner-single-img');
+                return;
+            }
+
+            bannerContainer.classList.remove('banner-single-img');
+            let currentIndex = 0;
+            // 激活第一张图
+            images[currentIndex].classList.add('active');
+
+            // 3秒切换一次（可自行调整）
+            bannerInterval = setInterval(() => {
+                // 隐藏当前图
+                images[currentIndex].classList.remove('active');
+                // 切换到下一张
+                currentIndex = (currentIndex + 1) % imgCount;
+                // 显示下一张图
+                images[currentIndex].classList.add('active');
+            }, 5000);
+        }
+
+        // 渲染轮播图
+        function renderBanner() {
+            const bannerContainer = document.getElementById('banner-container');
+            const urls = getBannerUrls();
+            bannerContainer.innerHTML = ''; // 清空原有内容
+
+            // 生成图片元素
+            urls.forEach(url => {
+                const img = document.createElement('img');
+                img.src = url;
+                img.loading = 'lazy';
+                img.onerror = function () {
+                    // 加载失败时使用默认图占位
+                    this.src = defaultBannerUrls[0];
+                };
+                bannerContainer.appendChild(img);
+            });
+
+            // 启动轮播动画
+            startBannerAnimation();
+        }
+
+        // 打开轮播图编辑弹窗
+        function openBannerModal() {
+            const urls = getBannerUrls();
+            document.getElementById('banner-urls').value = urls.join('\n');
+            previewBannerImages(); // 预览当前轮播图
+            document.getElementById('banner-modal').style.display = 'flex';
+        }
+
+        // 预览轮播图
+        function previewBannerImages() {
+            const previewContainer = document.getElementById('banner-preview-container');
+            previewContainer.innerHTML = '';
+            const urls = document.getElementById('banner-urls').value.split('\n').filter(url => url.trim());
+
+            if (urls.length === 0) {
+                previewContainer.innerHTML = '<span style="color:#999;">请输入图片URL</span>';
+                return;
+            }
+
+            urls.forEach(url => {
+                const imgWrapper = document.createElement('div');
+                imgWrapper.style.width = '80px';
+                imgWrapper.style.height = '60px';
+                imgWrapper.style.borderRadius = '6px';
+                imgWrapper.style.overflow = 'hidden';
+                imgWrapper.style.border = '1px solid #eee';
+
+                const img = document.createElement('img');
+                img.src = url.trim();
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+                img.onerror = function () {
+                    this.src = defaultBannerUrls[0];
+                    this.style.opacity = '0.5';
+                };
+
+                imgWrapper.appendChild(img);
+                previewContainer.appendChild(imgWrapper);
+            });
+        }
+
+        // 保存轮播图修改
+        function saveBannerChange() {
+            let urls = document.getElementById('banner-urls').value.split('\n')
+                .map(url => url.trim())
+                .filter(url => url); // 过滤空行
+
+            // 最多保留5张，最少1张
+            if (urls.length === 0) urls = defaultBannerUrls;
+            if (urls.length > 5) urls = urls.slice(0, 5);
+
+            localStorage.setItem('banner_urls', JSON.stringify(urls));
+            renderBanner(); // 重新渲染轮播图
+            closeModal('banner-modal');
+            alert('轮播图保存成功！');
+        }
+
+        // 恢复默认轮播图
+        function resetBanner() {
+            if (confirm('确定要恢复默认轮播图吗？')) {
+                localStorage.setItem('banner_urls', JSON.stringify(defaultBannerUrls));
+                document.getElementById('banner-urls').value = defaultBannerUrls.join('\n');
+                previewBannerImages();
+            }
+        }
+
         // --- 核心优化：先显示缓存，后异步请求 ---
         const cached = localStorage.getItem('nav_data_cache');
         if (cached) {
             globalData = JSON.parse(cached);
             renderGrid();
         }
+
+        // 初始化轮播图
+        renderBanner();
 
         async function initData() {
             try {
@@ -202,12 +412,12 @@
             renderGrid(); closeModal('item-modal');
         }
 
-        function deleteCurrentItem() { 
-            if (confirm("确定要删除这个卡片吗？")) { 
-                globalData.splice(currentEditIndex, 1); 
+        function deleteCurrentItem() {
+            if (confirm("确定要删除这个卡片吗？")) {
+                globalData.splice(currentEditIndex, 1);
                 localStorage.setItem('nav_data_cache', JSON.stringify(globalData));
-                renderGrid(); closeModal('item-modal'); 
-            } 
+                renderGrid(); closeModal('item-modal');
+            }
         }
 
         function previewImage(u) { document.getElementById('img-preview').src = u; }
@@ -227,18 +437,31 @@
                 const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/data.json`, {
                     method: 'PUT',
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        message: "Update data.json via web UI", 
-                        content: btoa(unescape(encodeURIComponent(JSON.stringify(globalData, null, 4)))), 
-                        sha: fileData.sha, 
-                        branch: "main" 
+                    body: JSON.stringify({
+                        message: "Update data.json via web UI",
+                        content: btoa(unescape(encodeURIComponent(JSON.stringify(globalData, null, 4)))),
+                        sha: fileData.sha,
+                        branch: "main"
                     })
                 });
-                if (putRes.ok) alert("✅ 同步到 GitHub 成功！"); 
+                if (putRes.ok) alert("✅ 同步到 GitHub 成功！");
                 else throw new Error("同步失败");
             } catch (e) { alert("❌ 错误：" + e.message); }
             finally { btn.innerText = "覆盖云端 data.json"; btn.disabled = false; }
         }
+
+        // 监听轮播图输入框变化，实时预览
+        document.addEventListener('DOMContentLoaded', function () {
+            const bannerInput = document.getElementById('banner-urls');
+            if (bannerInput) {
+                bannerInput.addEventListener('input', previewBannerImages);
+            }
+        });
+
+        // 页面卸载时清理定时器
+        window.addEventListener('beforeunload', function () {
+            stopBannerAnimation();
+        });
     </script>
 </body>
 
