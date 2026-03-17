@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="Zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body {
+        text-align: center;
+    }
+</style>
+
+<body>
+    <h3>随机点名</h3>
+    <p>名字是：
+    <div class="zz">xxx</div>
+    </p>
+    <div>
+        <button class="ks">开始</button>
+        <button class="js">结束</button>
+    </div>
+    <script>
+        let arr = ['我', '你', '他', '她', '它']
+        function getRandom(min, max) {
+            // 随机数
+            return Math.floor(Math.random() * (max - min + 1)) + min
+        }
+        let zz = document.querySelector('.zz')
+        let ks = document.querySelector('.ks')
+        let js = document.querySelector('.js')
+        let random = 0
+        let cz = 0
+        ks.addEventListener('click', function () {
+            cz = setInterval(function () {
+                random = getRandom(0, arr.length - 1)
+                zz.innerHTML = arr[random]
+            }, 100)
+
+            if (arr.length === 1) {
+                ks.disabled = true
+                js.disabled = true
+            }
+        })
+        js.addEventListener('click', function () {
+            clearInterval(cz)
+            arr.splice(random, 1)
+        })
+    </script>
+</body>
+
+</html>
