@@ -114,7 +114,7 @@
             <div class="form-group"><input type="password" id="gh-token" placeholder="GitHub Token"></div>
             <div class="form-group"><input type="text" id="gh-repo" placeholder="用户名/仓库名 (如: xgd1062/v)"></div>
             <button onclick="syncToGithub()" id="sync-btn" class="btn-primary" style="width:100%">覆盖云端
-                data.json</button>
+                04data.json</button>
         </div>
     </div>
 
@@ -314,7 +314,7 @@
 
         async function initData() {
             try {
-                const r = await fetch('data.json?v=' + Date.now());
+                const r = await fetch('04data.json?v=' + Date.now());
                 const data = await r.json();
                 // 仅在数据有变动时重新渲染
                 if (JSON.stringify(data) !== JSON.stringify(globalData)) {
@@ -430,15 +430,15 @@
             const repo = document.getElementById('gh-repo').value.trim() || "xgd1062/v";
             btn.innerText = "⏳ 同步中..."; btn.disabled = true;
             try {
-                const getRes = await fetch(`https://api.github.com/repos/${repo}/contents/data.json?ref=main`, {
+                const getRes = await fetch(`https://api.github.com/repos/${repo}/contents/04data.json?ref=main`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const fileData = await getRes.json();
-                const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/data.json`, {
+                const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/04data.json`, {
                     method: 'PUT',
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        message: "Update data.json via web UI",
+                        message: "Update 04data.json via web UI",
                         content: btoa(unescape(encodeURIComponent(JSON.stringify(globalData, null, 4)))),
                         sha: fileData.sha,
                         branch: "main"
@@ -447,7 +447,7 @@
                 if (putRes.ok) alert("✅ 同步到 GitHub 成功！");
                 else throw new Error("同步失败");
             } catch (e) { alert("❌ 错误：" + e.message); }
-            finally { btn.innerText = "覆盖云端 data.json"; btn.disabled = false; }
+            finally { btn.innerText = "覆盖云端 04data.json"; btn.disabled = false; }
         }
 
         // 监听轮播图输入框变化，实时预览
