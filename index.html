@@ -400,30 +400,6 @@
             await initMessages();
         }
 
-        // 4. 初始化Token与仓库信息
-        async function initGithubConfig() {
-            // 解析仓库信息
-            const isParseSuccess = parseGithubInfoFromUrl();
-            if (!isParseSuccess) return;
-
-            // 读取本地Token
-            const savedToken = localStorage.getItem('github_token');
-            if (savedToken) {
-                GITHUB_CONFIG.token = savedToken;
-                // 验证Token是否仍有效
-                const isValid = await verifyToken(savedToken);
-                if (isValid) {
-                    await initMessages();
-                    return;
-                } else {
-                    localStorage.removeItem('github_token'); // 无效Token清除
-                }
-            }
-
-            // 无有效Token，显示输入弹窗
-            document.getElementById('tokenModal').style.display = 'flex';
-        }
-
         // ===================== GitHub API 交互逻辑 =====================
         // 1. 获取文件的SHA（修改文件必须）
         async function getFileSha() {
@@ -521,7 +497,9 @@
         async function initMessages() {
             const messages = await loadMessages();
             ul.innerHTML = ''; // 清空原有内容
-            messages.forEach(msg => {
+            // 核心修改：将留言数组倒序排列（最新发布的在最顶部）
+            const reversedMessages = messages.reverse();
+            reversedMessages.forEach(msg => {
                 renderMessageItem(msg);
             });
         }
@@ -535,7 +513,8 @@
                 <button class='copy-btn'>复制</button>
                 <button class='xx'>×</button>
             </div>`;
-            ul.appendChild(li);
+            // 核心修改：新发布的留言插入到列表最前面（保持倒序）
+            ul.insertBefore(li, ul.firstChild);
 
             // 绑定复制按钮事件
             const copyBtn = li.querySelector('.copy-btn');
@@ -548,7 +527,8 @@
                 ul.removeChild(li);
                 // 更新并保存留言
                 const currentMessages = Array.from(ul.querySelectorAll('.message-text')).map(el => el.textContent.trim());
-                await saveMessages(currentMessages);
+                // 保存时恢复正序（避免多次倒序导致顺序混乱）
+                await saveMessages(currentMessages.reverse());
             });
         }
 
@@ -639,13 +619,13 @@
                 return;
             }
 
-            // 渲染新留言
+            // 渲染新留言（已在renderMessageItem中处理为插入到顶部）
             renderMessageItem(content);
             g0();
 
-            // 保存到GitHub
+            // 保存到GitHub（保存时恢复正序，避免多次倒序）
             const currentMessages = Array.from(ul.querySelectorAll('.message-text')).map(el => el.textContent.trim());
-            await saveMessages(currentMessages);
+            await saveMessages(currentMessages.reverse());
         });
 
         // 回车发布
