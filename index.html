@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>留言发布板</title>
     <style>
-        /* 样式完全保留，无修改 */
+        /* 全局样式重置与基础设置 */
         * {
             margin: 0;
             padding: 0;
@@ -21,6 +21,7 @@
             line-height: 1.6;
         }
 
+        /* 主容器样式 */
         .dv {
             max-width: 600px;
             margin: 0 auto;
@@ -31,6 +32,7 @@
             text-align: center;
         }
 
+        /* 标题样式 */
         .dv>p:first-child {
             font-size: 20px;
             font-weight: 600;
@@ -38,12 +40,14 @@
             margin-bottom: 20px;
         }
 
+        /* 输入框容器：包裹输入框和粘贴按钮 */
         .input-wrapper {
             display: flex;
             gap: 8px;
             margin-bottom: 10px;
         }
 
+        /* 输入框样式 */
         input[type="text"] {
             flex: 1;
             padding: 12px 15px;
@@ -59,6 +63,7 @@
             box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.1);
         }
 
+        /* 粘贴按钮样式 */
         .paste-btn {
             background-color: #f0f7ff;
             color: #409eff;
@@ -75,6 +80,7 @@
             background-color: #e8f4ff;
         }
 
+        /* 发布按钮样式 */
         button:not(.xx):not(.copy-btn):not(.paste-btn) {
             background-color: #409eff;
             color: white;
@@ -95,6 +101,7 @@
             background-color: #266ab9;
         }
 
+        /* 字数统计样式 */
         .dv>p:nth-child(6) {
             text-align: right;
             font-size: 12px;
@@ -107,6 +114,7 @@
             font-weight: 600;
         }
 
+        /* 列表样式 */
         ul {
             list-style: none;
             margin-top: 20px;
@@ -133,6 +141,7 @@
             width: 100%;
         }
 
+        /* 头像样式 */
         li img {
             width: 24px;
             height: 24px;
@@ -141,6 +150,7 @@
             object-fit: cover;
         }
 
+        /* 留言内容样式 */
         li p {
             flex: 1;
             text-align: left;
@@ -148,6 +158,7 @@
             word-break: break-all;
         }
 
+        /* 复制按钮样式 */
         .copy-btn {
             background-color: transparent;
             color: #409eff;
@@ -164,6 +175,7 @@
             background-color: #e8f4ff;
         }
 
+        /* 删除按钮样式 */
         .xx {
             background-color: transparent;
             color: #ff4949;
@@ -232,6 +244,28 @@
             margin-bottom: 15px;
             font-size: 12px;
         }
+
+        /* 新增：同步成功提示悬窗样式 */
+        .sync-tip {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 8px 15px;
+            background: #52c41a;
+            color: white;
+            font-size: 12px;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 9998;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            /* 不遮挡点击操作 */
+        }
+
+        .sync-tip.show {
+            opacity: 1;
+        }
     </style>
 </head>
 
@@ -258,6 +292,9 @@
         </div>
     </div>
 
+    <!-- 新增：同步成功提示悬窗 -->
+    <div class="sync-tip" id="syncTip">同步成功</div>
+
     <script>
         // ===================== 全局变量与基础函数 =====================
         let GITHUB_CONFIG = {
@@ -271,11 +308,21 @@
         const span = document.querySelector('span');
         const pasteBtn = document.querySelector('.paste-btn');
         const publishBtn = document.querySelector('button:not(.paste-btn):not(.copy-btn):not(.xx)');
+        // 新增：同步提示元素
+        const syncTip = document.getElementById('syncTip');
 
         // 清空输入框
         function g0() {
             input.value = '';
             span.innerHTML = 0;
+        }
+
+        // 新增：显示同步成功提示（3秒后自动隐藏）
+        function showSyncTip() {
+            syncTip.classList.add('show');
+            setTimeout(() => {
+                syncTip.classList.remove('show');
+            }, 3000);
         }
 
         // ===================== GitHub 信息解析与Token管理 =====================
@@ -438,7 +485,7 @@
         async function saveMessages(messages) {
             try {
                 const sha = await getFileSha();
-                // 内容转Base64编码
+                // 内容转Base64编码（解决中文乱码）
                 const content = btoa(unescape(encodeURIComponent(JSON.stringify(messages, null, 2))));
                 const response = await fetch(
                     `https://api.github.com/repos/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`,
@@ -461,6 +508,8 @@
                     throw new Error(`保存失败：${errData.message || response.status}`);
                 }
                 console.log('留言已成功保存到GitHub仓库');
+                // 新增：触发同步成功提示
+                showSyncTip();
             } catch (err) {
                 console.error('保存留言失败：', err);
                 alert('保存留言失败：' + err.message);
@@ -610,4 +659,5 @@
         window.onload = initGithubConfig;
     </script>
 </body>
+
 </html>
