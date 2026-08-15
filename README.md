@@ -11,3 +11,11 @@ UpDate！
 ## md文件有什么格式呢，好奇。
 
 
+# 1. 检查是否关联了远程仓库
+git remote -v
+
+# 2. 获取GitHub上的最新状态（关键步骤！）
+git fetch origin
+
+# 3. 查看本地与远程的同步状态
+git status
