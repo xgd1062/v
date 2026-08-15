@@ -19,3 +19,6 @@ git fetch origin
 
 # 3. 查看本地与远程的同步状态
 git status
+
+# GitHub上已有仓库，本地完全没代码（最简单）（直接下载并建立联系）（首次上传需要验证）
+git clone https://github.com/你的用户名/仓库名.git
