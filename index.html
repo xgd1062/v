@@ -180,11 +180,12 @@
         }
 
         li img {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             object-fit: cover;
             flex-shrink: 0;
+            background-color: #f1f5f9;
         }
 
         li p.message-text {
@@ -194,7 +195,6 @@
             font-size: 15px;
             line-height: 1.6;
             word-break: break-all;
-            /* 防止长字符串挤压布局 */
             padding-top: 4px;
         }
 
@@ -225,6 +225,14 @@
             border-radius: 8px;
             font-size: 13px;
             height: 32px;
+            transition: all 0.2s ease;
+        }
+
+        /* 确认删除状态样式 */
+        .xx.confirming {
+            background-color: #ef4444;
+            color: #ffffff;
+            font-weight: 700;
         }
 
         /* 弹窗样式 */
@@ -338,6 +346,12 @@
         function g0() { input.value = ''; span.innerHTML = 0; }
         function showSyncTip() { syncTip.classList.add('show'); setTimeout(() => syncTip.classList.remove('show'), 3000); }
 
+        /* 基于文本生成唯一的随机几何头像 */
+        function getAvatarUrl(text) {
+            const seed = encodeURIComponent(text || Math.random().toString());
+            return `https://api.dicebear.com/7.x/miniavs/svg?seed=${seed}`;
+        }
+
         function parseGithubInfoFromUrl() {
             const url = window.location.href;
             const pagesRegex = /https?:\/\/([^.]+)\.github\.io\/([^\/]+)/;
@@ -403,10 +417,12 @@
 
         function renderMessageUI(content) {
             const li = document.createElement('li');
+            const avatarUrl = getAvatarUrl(content);
+
             li.innerHTML = `
                 <div class="msg-card">
                     <div class="msg-header">
-                        <img src="https://avatars.githubusercontent.com/u/0?s=24&v=4">
+                        <img src="${avatarUrl}" alt="avatar">
                         <p class="message-text"></p>
                     </div>
                     <div class="msg-actions">
@@ -417,6 +433,7 @@
             li.querySelector('.message-text').textContent = content;
             ul.insertBefore(li, ul.firstChild);
 
+            /* 复制功能 */
             li.querySelector('.copy-btn').onclick = () => {
                 navigator.clipboard.writeText(content);
                 const btn = li.querySelector('.copy-btn');
@@ -424,10 +441,28 @@
                 setTimeout(() => btn.textContent = '复制', 2000);
             };
 
-            li.querySelector('.xx').onclick = async () => {
-                li.remove();
-                const current = Array.from(ul.querySelectorAll('.message-text')).map(el => el.textContent);
-                await saveMessages(current);
+            /* 删除按钮二次确认功能 */
+            const deleteBtn = li.querySelector('.xx');
+            let deleteTimer = null;
+
+            deleteBtn.onclick = async () => {
+                if (!deleteBtn.classList.contains('confirming')) {
+                    // 第一次点击：切换为确认状态
+                    deleteBtn.classList.add('confirming');
+                    deleteBtn.textContent = '确认删除？';
+
+                    // 3 秒内未点击则复原
+                    deleteTimer = setTimeout(() => {
+                        deleteBtn.classList.remove('confirming');
+                        deleteBtn.textContent = '删除';
+                    }, 3000);
+                } else {
+                    // 第二次点击：执行真正删除
+                    clearTimeout(deleteTimer);
+                    li.remove();
+                    const current = Array.from(ul.querySelectorAll('.message-text')).map(el => el.textContent);
+                    await saveMessages(current);
+                }
             };
         }
 
